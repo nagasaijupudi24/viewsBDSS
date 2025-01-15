@@ -1,0 +1,53 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+.SearchWeb {
+    overflow: hidden;
+    padding: 1em;
+    color: "[theme:bodyText, default: #323130]";
+    color: var(--bodyText);
+    &.teams {
+      font-family: $ms-font-family-fallbacks;
+    }
+ 
+  }
+  .btn_Container{
+        
+    display: flex;
+    justify-content: center;
+    gap:10px;
+}
+.customHeader{
+    font-size: 16px;
+    font-weight: Bold;
+    text-align: center;
+    color:"[theme:themePrimary, default:#03787c]";
+}
+  .customFieldSet{
+    border: 1px solid #00000030 !important;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    height: calc(100% + 20px);
+    display: flex;
+    flex-wrap: wrap;
+  }
+  ._listviewContainerDataTable{
+    max-height: 50vh;
+    min-height: auto;
+    overflow: auto;
+    div[class^='ms-DetailsList']{
+      overflow: visible !important;
+    }
+  }
+  .commandbarContainer{
+    background-color: #fff;
+    border-bottom: 1px solid #a9a9a9;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 10px 0px;
+  }
+  ._totalDataCount{
+    float: left;
+    color:"[theme:themePrimary, default:#03787c]";
+  }

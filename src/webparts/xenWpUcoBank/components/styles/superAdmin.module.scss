@@ -1,0 +1,132 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+.xenWpUcoBank {
+    overflow: hidden;
+    padding: 1em;
+    color: "[theme:bodyText, default: #323130]";
+    color: var(--bodyText);
+    &.teams {
+      font-family: $ms-font-family-fallbacks;
+    }
+  }
+  .sectionheader{
+    border-radius: 10px;
+    padding: 10px;
+    justify-content: center;
+    margin-top: 10px !important;
+    margin-bottom: 12px;
+  }
+
+  .customFieldSet{
+    border: 1px solid #00000030 !important;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    height: calc(100% + 20px);
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  ._dataTable{
+    border: 1px solid #00000030 !important;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  .tableHeader_Containor{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 10px 0px;
+  }
+  .peoplePicker_Containor{
+    max-width: 300px;
+    min-width: 100px;
+  }
+  .commandbarContainer{
+    background-color: #fff;
+    border-bottom: 1px solid #a9a9a9;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 10px 0px;
+  }
+
+  .commandbarContainerLeft{
+    text-align: left;
+    
+  }
+  ._listviewContainerDataTable{
+    max-height: 50vh;
+    min-height: auto;
+    overflow: auto;
+    div[class^='ms-DetailsList']{
+      overflow: visible !important;
+    }
+  }
+  .ChartViewcontainer {
+    margin: 20px;
+    .ContorlSection {
+      text-align: end;
+  }
+  
+  .button {
+      margin: 28px;
+  }
+}
+.landingPgTopBtnRow{
+  display: flex;
+  justify-content: space-between;
+}
+.landingPgTopBtn{
+  width:16%;
+  background-color: "[theme:link, default:#03787c]";
+  height:70px;
+  color:#fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border:1px solid #e4dcdc;
+  border-radius: 5px;
+  word-break: break-all;
+
+}
+
+.inActivelandingPgTopBtn{
+  align-items: center;
+  display: flex;
+  height: 70px;
+  justify-content: center;
+  width: 16%;
+  border: 1px solid #e4dcdc;
+  border-radius: 5px;
+  word-break: break-word;
+}
+.landingPgTopBtncontent {
+  color: #333333;
+  margin-left: 8px;
+  width: 25px;
+  height: 25px;
+  font-size: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: 1px solid black;
+  background: "[theme:themeLight, default:#b3d6f2]";
+}
+._totalDataCount{
+  float: left;
+  color:"[theme:themePrimary, default:#03787c]";
+}
+
+.mobile_homepage_btn{
+  display: none;
+}
+
+
+
+  
