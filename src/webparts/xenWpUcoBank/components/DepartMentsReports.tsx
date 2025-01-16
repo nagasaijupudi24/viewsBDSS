@@ -1002,9 +1002,10 @@ console.log(user,"user")
     newValue?: string
   ): void => {
     console.log(newValue, "test");
-    this.setState({
-      listItems: newValue
-        ? this.state.allItems.filter((item: any) =>
+  
+    this.setState((prevState) => {
+      const filteredItems = newValue
+        ? prevState.allItems.filter((item: any) =>
             Object.values(item).some(
               (value: any) =>
                 (value || "")
@@ -1013,11 +1014,17 @@ console.log(user,"user")
                   .indexOf(newValue.toLowerCase()) > -1
             )
           )
-        : this.state.allItems,
+        : prevState.allItems;
+  
+      // Perform pagination based on filtered items
+      this.paginateFn(filteredItems);
+  
+      return {
+        listItems: filteredItems,
+      };
     });
-    this.paginateFn(this.state.listItems);
-    // }
   };
+  
 
   private _onColumnClick = (
     ev: React.MouseEvent<HTMLElement>,

@@ -2017,6 +2017,13 @@ export default class ListViews extends React.Component<
     return filterQury;
   };
 
+
+  private _CommitteeNameCondition1 = (obj:any):any=>{
+    return obj.BoardName === null
+    ? ""
+    : obj.BoardName
+  }
+
   private getAllrequestesData = async () => {
     const filterQury = await this._getBylistWithFilterQuery();
     const groupedData: any = [];
@@ -2040,6 +2047,8 @@ export default class ListViews extends React.Component<
       )
       .expand(`Author,Editor,PreviousApprover,CurrentApprover,FinalApprover`)
       .orderBy("Created", false)();
+
+    
     items.map((obj: any) => {
       allItems.push({
         Id: obj.Id,
@@ -2081,9 +2090,7 @@ export default class ListViews extends React.Component<
             : obj.CommitteeType,
         committeeName:
           obj.CommitteeName === null
-            ? obj.BoardName === null
-              ? ""
-              : obj.BoardName
+            ? this._CommitteeNameCondition1(obj)
             : obj.CommitteeName,
       });
     });
@@ -2150,14 +2157,14 @@ export default class ListViews extends React.Component<
   };
 
   private _toggleWarningDialog = () => {
-    this.setState({
-      hideWarningDialog: !this.state.hideWarningDialog,
-    });
+    this.setState((prevState)=>({
+      hideWarningDialog: !prevState.hideWarningDialog,
+    }));
   };
   private _toggleSuccussDialog = () => {
-    this.setState({
-      hideSuccussDialog: !this.state.hideSuccussDialog,
-    });
+    this.setState((prevState)=>({
+      hideSuccussDialog: !prevState.hideSuccussDialog,
+    }));
   };
 
   public _onclickDelete = (id: any) => {
@@ -2199,8 +2206,11 @@ export default class ListViews extends React.Component<
     event?: React.ChangeEvent<HTMLInputElement>,
     newValue?: string
   ): void => {
-    const filteredItems = newValue
-      ? this.state.allItems.filter((item: any) =>
+   
+    this.setState((prevState)=>{
+
+      const filteredItems = newValue
+      ? prevState.allItems.filter((item: any) =>
           Object.values(item).some(
             (value: any) =>
               (value || "")
@@ -2209,11 +2219,13 @@ export default class ListViews extends React.Component<
                 .indexOf(newValue.toLowerCase()) > -1
           )
         )
-      : this.state.allItems;
-    this.setState({
-      listItems: filteredItems,
+      : prevState.allItems;
+
+      this.paginateFn(filteredItems, this.state.page);
+
+      return {listItems: filteredItems,}
     });
-    this.paginateFn(filteredItems, this.state.page);
+   
     // }
   };
 
@@ -2270,326 +2282,9 @@ export default class ListViews extends React.Component<
       dragOptions: dragOptions,
     };
     const _items =
-      this.props.noteType === "eCommittee"
-        ? this.props.viewType === "Draft Requests"
-          ? [
-              {
-                key: "newItem",
-                name: "Create New Request",
-                iconProps: {
-                  iconName: "Add",
-                },
-                split: true,
-                subMenuProps: {
-                  items: [
-                    {
-                      key: "Committeenotes",
-                      text: "Committee Note",
-                      onClick: () => {
-                        window.location.href =
-                          this.props.context.pageContext.web.absoluteUrl +
-                          `/SitePages/${this.props.newPageUrl}.aspx`;
-                      },
-                    },
-                    {
-                      key: "Boardnotes",
-                      text: "Board Notes",
-                      onClick: () => {
-                        window.location.href =
-                          this.props.context.pageContext.web.absoluteUrl +
-                          `/SitePages/${this.props.CBnewPageUrl}.aspx`;
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                key: "EditItem",
-                name: "Edit Request",
-                iconProps: {
-                  iconName: "Edit",
-                },
-                disabled: this._hideCommandOption,
-                onClick: () => {
-                  const item = this.state.selectionDetails;
-                  if (this.state.selectedcount === 0) {
-                    this._hideCommandOption = true;
-                  } else {
-                    if (this.props.noteType === "eCommittee") {
-                      if (
-                        item.CommitteeType &&
-                        item.CommitteeType === "Board"
-                      ) {
-                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`;
-                      } else {
-                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
-                      }
-                    } else {
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
-                    }
-                  }
-                },
-              },
-              {
-                key: "ViewItem",
-                name: "View Request",
-                iconProps: {
-                  iconName: "View",
-                },
-                className: "viewBtnDiv",
-                disabled: this._hideCommandOption,
-                onClick: () => {
-                  const item = this.state.selectionDetails;
-                  if (this.state.selectedcount === 0) {
-                    this._hideCommandOption = true;
-                    return null;
-                  } else {
-                    if (this.props.noteType === "eCommittee") {
-                      if (
-                        item.CommitteeType &&
-                        item.CommitteeType === "Board"
-                      ) {
-                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
-                      } else {
-                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                      }
-                    } else {
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                    }
-                  }
-                },
-              },
-            ]
-          : this.props.viewType === "PendingWith"
-          ? [
-              {
-                key: "Excell",
-                name: "Export CSV",
-                iconProps: {
-                  iconName: "ExcelLogo",
-                },
-                disabled: this.state.allItems.length === 0,
-                onClick: () => {
-                  this._getExcel()
-                    .then((res) => res)
-                    .catch((err) => err);
-                },
-              },
-            ]
-          : [
-              {
-                key: "newItem",
-                name: "Create New Request",
-                iconProps: {
-                  iconName: "Add",
-                },
-                split: true,
-                subMenuProps: {
-                  items: [
-                    {
-                      key: "Committeenotes",
-                      text: "Committee Note",
-                      onClick: () => {
-                        window.location.href =
-                          this.props.context.pageContext.web.absoluteUrl +
-                          `/SitePages/${this.props.newPageUrl}.aspx`;
-                      },
-                    },
-                    {
-                      key: "Boardnotes",
-                      text: "Board Notes",
-                      onClick: () => {
-                        window.location.href =
-                          this.props.context.pageContext.web.absoluteUrl +
-                          `/SitePages/${this.props.CBnewPageUrl}.aspx`;
-                      },
-                    },
-                  ],
-                },
-              },
-
-              {
-                key: "ViewItem",
-                name: "View Request",
-                iconProps: {
-                  iconName: "View",
-                },
-                className: "viewBtnDiv",
-                disabled: this._hideCommandOption,
-                onClick: () => {
-                  const item = this.state.selectionDetails;
-
-                  if (this.state.selectedcount === 0) {
-                    this._hideCommandOption = true;
-                    return null;
-                  } else {
-                    if (this.props.noteType === "eCommittee") {
-                      if (
-                        item.CommitteeType &&
-                        item.CommitteeType === "Board"
-                      ) {
-                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
-                      } else {
-                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                      }
-                    } else {
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                    }
-                  }
-                },
-              },
-              {
-                key: "Excell",
-                name: "Export CSV",
-                iconProps: {
-                  iconName: "ExcelLogo",
-                },
-                disabled: this.state.allItems.length === 0,
-                onClick: () => {
-                  this._getExcel()
-                    .then((res) => res)
-                    .catch((err) => err);
-                },
-              },
-            ]
-        : this.props.viewType === "Draft Requests"
-        ? [
-            {
-              key: "newItem",
-              name: "Create New Request",
-              iconProps: {
-                iconName: "Add",
-              },
-              split: true,
-              onClick: () => {
-                window.location.href =
-                  this.props.context.pageContext.web.absoluteUrl +
-                  `/SitePages/${this.props.newPageUrl}.aspx`;
-              },
-            },
-            {
-              key: "EditItem",
-              name: "Edit Request",
-              iconProps: {
-                iconName: "Edit",
-              },
-              disabled: this._hideCommandOption,
-              onClick: () => {
-                const item = this.state.selectionDetails;
-                if (this.state.selectedcount === 0) {
-                  this._hideCommandOption = true;
-                } else {
-                  if (this.props.noteType === "eCommittee") {
-                    if (item.CommitteeType && item.CommitteeType === "Board") {
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`;
-                    } else {
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
-                    }
-                  } else {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
-                  }
-                }
-              },
-            },
-            {
-              key: "ViewItem",
-              name: "View Request",
-              iconProps: {
-                iconName: "View",
-              },
-              className: "viewBtnDiv",
-              disabled: this._hideCommandOption,
-              onClick: () => {
-                const item = this.state.selectionDetails;
-                if (this.state.selectedcount === 0) {
-                  this._hideCommandOption = true;
-                  return null;
-                } else {
-                  if (this.props.noteType === "eCommittee") {
-                    if (item.CommitteeType && item.CommitteeType === "Board") {
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
-                    } else {
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                    }
-                  } else {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                  }
-                }
-              },
-            },
-          ]
-        : this.props.viewType === "PendingWith"
-        ? [
-            {
-              key: "Excell",
-              name: "Export CSV",
-              iconProps: {
-                iconName: "ExcelLogo",
-              },
-              disabled: this.state.allItems.length === 0,
-              onClick: () => {
-                this._getExcel()
-                  .then((res) => res)
-                  .catch((err) => err);
-              },
-            },
-          ]
-        : [
-            {
-              key: "newItem",
-              name: "Create New Request",
-              iconProps: {
-                iconName: "Add",
-              },
-              split: true,
-              onClick: () => {
-                window.location.href =
-                  this.props.context.pageContext.web.absoluteUrl +
-                  `/SitePages/${this.props.newPageUrl}.aspx`;
-              },
-            },
-
-            {
-              key: "ViewItem",
-              name: "View Request",
-              iconProps: {
-                iconName: "View",
-              },
-              className: "viewBtnDiv",
-              disabled: this._hideCommandOption,
-              onClick: () => {
-                const item = this.state.selectionDetails;
-
-                if (this.state.selectedcount === 0) {
-                  this._hideCommandOption = true;
-                  return null;
-                } else {
-                  if (this.props.noteType === "eCommittee") {
-                    if (item.CommitteeType && item.CommitteeType === "Board") {
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
-                    } else {
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                    }
-                  } else {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                  }
-                }
-              },
-            },
-            {
-              key: "Excell",
-              name: "Export CSV",
-              iconProps: {
-                iconName: "ExcelLogo",
-              },
-              disabled: this.state.allItems.length === 0,
-              onClick: () => {
-                this._getExcel()
-                  .then((res) => res)
-                  .catch((err) => err);
-              },
-            },
-          ];
+      (this.props.noteType === "eCommittee"
+        ?this._itemsCondition1()
+        :this._itemsCondition2() );
     return (
       <section
         className={`${styles.xenWpUcoBank} ${
@@ -2670,7 +2365,7 @@ export default class ListViews extends React.Component<
         <Dialog
           hidden={this.state.hideDeleteDialog}
           onDismiss={() =>
-            this.setState({ hideDeleteDialog: !this.state.hideDeleteDialog })
+            this.setState((prevState)=>({ hideDeleteDialog: !prevState.hideDeleteDialog }))
           }
           dialogContentProps={dialogContentProps}
           modalProps={modalProps}
@@ -2687,4 +2382,344 @@ export default class ListViews extends React.Component<
       </section>
     );
   }
+
+  private _itemsCondition1SubCondition1 = ()=>{
+    return (this.props.viewType === "PendingWith"
+      ? [
+          {
+            key: "Excell",
+            name: "Export CSV",
+            iconProps: {
+              iconName: "ExcelLogo",
+            },
+            disabled: this.state.allItems.length === 0,
+            onClick: () => {
+              this._getExcel()
+                .then((res) => res)
+                .catch((err) => err);
+            },
+          },
+        ]
+      : [
+          {
+            key: "newItem",
+            name: "Create New Request",
+            iconProps: {
+              iconName: "Add",
+            },
+            split: true,
+            subMenuProps: {
+              items: [
+                {
+                  key: "Committeenotes",
+                  text: "Committee Note",
+                  onClick: () => {
+                    window.location.href =
+                      this.props.context.pageContext.web.absoluteUrl +
+                      `/SitePages/${this.props.newPageUrl}.aspx`;
+                  },
+                },
+                {
+                  key: "Boardnotes",
+                  text: "Board Notes",
+                  onClick: () => {
+                    window.location.href =
+                      this.props.context.pageContext.web.absoluteUrl +
+                      `/SitePages/${this.props.CBnewPageUrl}.aspx`;
+                  },
+                },
+              ],
+            },
+          },
+
+          {
+            key: "ViewItem",
+            name: "View Request",
+            iconProps: {
+              iconName: "View",
+            },
+            className: "viewBtnDiv",
+            disabled: this._hideCommandOption,
+            onClick: () => {
+              const item = this.state.selectionDetails;
+
+              if (this.state.selectedcount === 0) {
+                this._hideCommandOption = true;
+                return null;
+              } else {
+                if (this.props.noteType === "eCommittee") {
+                  if (
+                    item.CommitteeType &&
+                    item.CommitteeType === "Board"
+                  ) {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+                  } else {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                  }
+                } else {
+                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                }
+              }
+            },
+          },
+          {
+            key: "Excell",
+            name: "Export CSV",
+            iconProps: {
+              iconName: "ExcelLogo",
+            },
+            disabled: this.state.allItems.length === 0,
+            onClick: () => {
+              this._getExcel()
+                .then((res) => res)
+                .catch((err) => err);
+            },
+          },
+        ])
+  }
+
+
+  private _itemsCondition1 = ()=>{
+    return ( this.props.viewType === "Draft Requests"
+      ? [
+          {
+            key: "newItem",
+            name: "Create New Request",
+            iconProps: {
+              iconName: "Add",
+            },
+            split: true,
+            subMenuProps: {
+              items: [
+                {
+                  key: "Committeenotes",
+                  text: "Committee Note",
+                  onClick: () => {
+                    window.location.href =
+                      this.props.context.pageContext.web.absoluteUrl +
+                      `/SitePages/${this.props.newPageUrl}.aspx`;
+                  },
+                },
+                {
+                  key: "Boardnotes",
+                  text: "Board Notes",
+                  onClick: () => {
+                    window.location.href =
+                      this.props.context.pageContext.web.absoluteUrl +
+                      `/SitePages/${this.props.CBnewPageUrl}.aspx`;
+                  },
+                },
+              ],
+            },
+          },
+          {
+            key: "EditItem",
+            name: "Edit Request",
+            iconProps: {
+              iconName: "Edit",
+            },
+            disabled: this._hideCommandOption,
+            onClick: () => {
+              const item = this.state.selectionDetails;
+              if (this.state.selectedcount === 0) {
+                this._hideCommandOption = true;
+              } else {
+                if (this.props.noteType === "eCommittee") {
+                  if (
+                    item.CommitteeType &&
+                    item.CommitteeType === "Board"
+                  ) {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`;
+                  } else {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+                  }
+                } else {
+                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+                }
+              }
+            },
+          },
+          {
+            key: "ViewItem",
+            name: "View Request",
+            iconProps: {
+              iconName: "View",
+            },
+            className: "viewBtnDiv",
+            disabled: this._hideCommandOption,
+            onClick: () => {
+              const item = this.state.selectionDetails;
+              if (this.state.selectedcount === 0) {
+                this._hideCommandOption = true;
+                return null;
+              } else {
+                if (this.props.noteType === "eCommittee") {
+                  if (
+                    item.CommitteeType &&
+                    item.CommitteeType === "Board"
+                  ) {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+                  } else {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                  }
+                } else {
+                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                }
+              }
+            },
+          },
+        ]
+      : this._itemsCondition1SubCondition1())
+  }
+
+
+  private _itemsCondition2SubCondition1 = ()=>{
+    return ( this.props.viewType === "PendingWith"
+      ? [
+          {
+            key: "Excell",
+            name: "Export CSV",
+            iconProps: {
+              iconName: "ExcelLogo",
+            },
+            disabled: this.state.allItems.length === 0,
+            onClick: () => {
+              this._getExcel()
+                .then((res) => res)
+                .catch((err) => err);
+            },
+          },
+        ]
+      : [
+          {
+            key: "newItem",
+            name: "Create New Request",
+            iconProps: {
+              iconName: "Add",
+            },
+            split: true,
+            onClick: () => {
+              window.location.href =
+                this.props.context.pageContext.web.absoluteUrl +
+                `/SitePages/${this.props.newPageUrl}.aspx`;
+            },
+          },
+
+          {
+            key: "ViewItem",
+            name: "View Request",
+            iconProps: {
+              iconName: "View",
+            },
+            className: "viewBtnDiv",
+            disabled: this._hideCommandOption,
+            onClick: () => {
+              const item = this.state.selectionDetails;
+
+              if (this.state.selectedcount === 0) {
+                this._hideCommandOption = true;
+                return null;
+              } else {
+                if (this.props.noteType === "eCommittee") {
+                  if (item.CommitteeType && item.CommitteeType === "Board") {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+                  } else {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                  }
+                } else {
+                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                }
+              }
+            },
+          },
+          {
+            key: "Excell",
+            name: "Export CSV",
+            iconProps: {
+              iconName: "ExcelLogo",
+            },
+            disabled: this.state.allItems.length === 0,
+            onClick: () => {
+              this._getExcel()
+                .then((res) => res)
+                .catch((err) => err);
+            },
+          },
+        ])
+  }
+
+  private _itemsCondition2 = ()=>{
+    return (this.props.viewType === "Draft Requests"
+      ? [
+          {
+            key: "newItem",
+            name: "Create New Request",
+            iconProps: {
+              iconName: "Add",
+            },
+            split: true,
+            onClick: () => {
+              window.location.href =
+                this.props.context.pageContext.web.absoluteUrl +
+                `/SitePages/${this.props.newPageUrl}.aspx`;
+            },
+          },
+          {
+            key: "EditItem",
+            name: "Edit Request",
+            iconProps: {
+              iconName: "Edit",
+            },
+            disabled: this._hideCommandOption,
+            onClick: () => {
+              const item = this.state.selectionDetails;
+              if (this.state.selectedcount === 0) {
+                this._hideCommandOption = true;
+              } else {
+                if (this.props.noteType === "eCommittee") {
+                  if (item.CommitteeType && item.CommitteeType === "Board") {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`;
+                  } else {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+                  }
+                } else {
+                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+                }
+              }
+            },
+          },
+          {
+            key: "ViewItem",
+            name: "View Request",
+            iconProps: {
+              iconName: "View",
+            },
+            className: "viewBtnDiv",
+            disabled: this._hideCommandOption,
+            onClick: () => {
+              const item = this.state.selectionDetails;
+              if (this.state.selectedcount === 0) {
+                this._hideCommandOption = true;
+                return null;
+              } else {
+                if (this.props.noteType === "eCommittee") {
+                  if (item.CommitteeType && item.CommitteeType === "Board") {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+                  } else {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                  }
+                } else {
+                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                }
+              }
+            },
+          },
+        ]
+      :this._itemsCondition2SubCondition1())
+     
+  }
+
+
+
+
 }

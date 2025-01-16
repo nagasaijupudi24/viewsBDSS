@@ -476,21 +476,26 @@ export default class SearchPage extends React.Component<
     newValue?: string
   ): void => {
 
-    const filteredItems = newValue
-    ? this.state.allItems.filter((item: any) =>
-        Object.values(item).some(
-          (value: any) =>
-            (value || "")
-              .toString()
-              .toLowerCase()
-              .indexOf(newValue.toLowerCase()) > -1
+   
+    this.setState((prevState)=>{
+
+      const filteredItems = newValue
+      ? prevState.allItems.filter((item: any) =>
+          Object.values(item).some(
+            (value: any) =>
+              (value || "")
+                .toString()
+                .toLowerCase()
+                .indexOf(newValue.toLowerCase()) > -1
+          )
         )
-      )
-    : this.state.allItems;
-    this.setState({
-      listItems:filteredItems
+      : prevState.allItems;
+
+      this.paginateFn(filteredItems, prevState.page);
+
+    return { listItems:filteredItems}
     })
-    this.paginateFn(filteredItems, this.state.page);
+   
     // }
   };
 
@@ -1113,7 +1118,7 @@ CommitteeType: obj.CommitteeType ?? "",
         <Dialog
           hidden={this.state.showSuccessPopup}
           onDismiss={() =>
-            this.setState({ showSuccessPopup: !this.state.showSuccessPopup })
+            this.setState((prevState)=>({showSuccessPopup:!prevState.showSuccessPopup}))
           }
           dialogContentProps={dialogContentProps}
           modalProps={modalProps}
@@ -1121,7 +1126,7 @@ CommitteeType: obj.CommitteeType ?? "",
         >
           <p className="dialogcontent_">Please fill at least any one of the fields to search.</p>
           <DialogFooter>
-            <PrimaryButton onClick={()=>this.setState({showSuccessPopup:!this.state.showSuccessPopup})}>
+            <PrimaryButton onClick={()=>this.setState((prevState)=>({showSuccessPopup:!prevState.showSuccessPopup}))}>
             Ok
             </PrimaryButton>
           </DialogFooter>

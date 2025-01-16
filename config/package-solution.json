@@ -3,7 +3,7 @@
   "solution": {
     "name": "xenwp-uco-bank-client-side-solution",
     "id": "64c83995-d513-45bc-834c-775c6b3e09ee",
-    "version": "1.0.0.0",
+    "version": "1.0.0.1",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
@@ -31,7 +31,7 @@
         "title": "xenwp-uco-bank Feature",
         "description": "The feature that activates elements of the xenwp-uco-bank solution.",
         "id": "71a6c1b3-edce-4903-91c8-80c5943ec1d6",
-        "version": "1.0.0.0"
+        "version": "1.0.0.1"
       }
     ]
   },

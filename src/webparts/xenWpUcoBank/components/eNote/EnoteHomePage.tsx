@@ -1979,6 +1979,13 @@ export default class HomePage extends React.Component<
     return filterQury;
   };
 
+
+  private _CommitteeNameCondition1 = (obj:any):any=>{
+    return obj.BoardName === null
+    ? ""
+    : obj.BoardName
+  }
+
   private getAllrequestesData = async (
     actionBtn: string,
     committeType?: string
@@ -2046,9 +2053,7 @@ export default class HomePage extends React.Component<
           Modified: obj.Modified,
           committeeName:
             obj.CommitteeName === null
-              ? obj.BoardName === null
-                ? ""
-                : obj.BoardName
+              ?this._CommitteeNameCondition1(obj)
               : obj.CommitteeName,
           CommitteeType:
             obj.CommitteeType === null &&
@@ -2133,23 +2138,28 @@ export default class HomePage extends React.Component<
     event?: React.ChangeEvent<HTMLInputElement>,
     newValue?: string
   ): void => {
-    const filteredItems = newValue
-      ? this.state.allItems.filter((item: any) =>
-          Object.values(item).some(
-            (value: any) =>
-              (value || "")
-                .toString()
-                .toLowerCase()
-                .indexOf(newValue.toLowerCase()) > -1
+    this.setState((prevState) => {
+      const filteredItems = newValue
+        ? prevState.allItems.filter((item: any) =>
+            Object.values(item).some(
+              (value: any) =>
+                (value || "")
+                  .toString()
+                  .toLowerCase()
+                  .indexOf(newValue.toLowerCase()) > -1
+            )
           )
-        )
-      : this.state.allItems;
-    this.setState({
-      listItems: filteredItems,
+        : prevState.allItems;
+  
+      // Perform pagination based on filtered items and current page
+      this.paginateFn(filteredItems, prevState.page);
+  
+      return {
+        listItems: filteredItems,
+      };
     });
-    this.paginateFn(filteredItems, this.state.page);
-    // }
   };
+  
 
   private _onColumnClick = (
     ev: React.MouseEvent<HTMLElement>,

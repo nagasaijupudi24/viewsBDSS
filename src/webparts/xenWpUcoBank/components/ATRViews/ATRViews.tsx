@@ -586,8 +586,11 @@ Accepted - 4000 */
     event?: React.ChangeEvent<HTMLInputElement>,
     newValue?: string
   ): void => {
-    const filteredItems = newValue
-      ? this.state.allItems.filter((item: any) =>
+    
+    this.setState((prevState)=>{
+
+      const filteredItems = newValue
+      ? prevState.allItems.filter((item: any) =>
           Object.values(item).some(
             (value: any) =>
               (value || "")
@@ -596,12 +599,14 @@ Accepted - 4000 */
                 .indexOf(newValue.toLowerCase()) > -1
           )
         )
-      : this.state.allItems;
-    this.setState({
-      listItems: filteredItems,
+      :prevState.allItems;
+
+      this.paginateFn(filteredItems, this.state.page);
+
+     return { listItems: filteredItems,}
     });
 
-    this.paginateFn(filteredItems, this.state.page);
+    
     // }
   };
 

@@ -187,7 +187,7 @@ export default class PasscodePage extends React.Component<
           Title: user.Title,
         });
       }
-      this.setState({ showSuccessPopup: !this.state.showSuccessPopup });
+      this.setState((prevState)=>({ showSuccessPopup: !prevState.showSuccessPopup }));
 
     } catch (err) {
       console.error(err);
@@ -229,10 +229,11 @@ export default class PasscodePage extends React.Component<
   private _handleOtpChange = (index: number, value: string) => {
     if (/[^a-zA-Z0-9]/.test(value)) return;
 /*     // Only allow alphanumeric input */
-    const newOtp = [...this.state.otp];
-    newOtp[index] = value;
-    this.setState({
-      otp: newOtp,
+    
+    this.setState((prevState)=>{
+      const newOtp = [...prevState.otp];
+       newOtp[index] = value;
+      return {otp: newOtp,}
     });
     console.log(this._inputsRef, "this._inputsRef");
 
@@ -534,7 +535,7 @@ export default class PasscodePage extends React.Component<
         <Dialog
           hidden={this.state.showErrorPopup}
           onDismiss={() =>
-            this.setState({ showErrorPopup: !this.state.showErrorPopup })
+            this.setState((prevState)=>({ showErrorPopup: !prevState.showErrorPopup }))
           }
           dialogContentProps={dialogContentProps}
           modalProps={modalProps}
@@ -548,7 +549,7 @@ export default class PasscodePage extends React.Component<
             <PrimaryButton
             iconProps={{iconName:"ReplyMirrored"}}
               onClick={() =>
-                this.setState({ showErrorPopup: !this.state.showErrorPopup })
+                this.setState((prevState)=>({ showErrorPopup: !prevState.showErrorPopup }))
               }
             >
               Ok
