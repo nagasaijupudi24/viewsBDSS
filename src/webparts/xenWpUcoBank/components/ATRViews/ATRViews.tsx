@@ -428,7 +428,7 @@ Competed -2000
 Returned- 3000
 Accepted - 4000 */
     let user = await this.props.sp?.web.currentUser();
-    let filterQury = "";
+    let filterQury:any;
     switch (this.props.viewType) {
       case "allATR":
         filterQury = "";
@@ -676,7 +676,7 @@ Accepted - 4000 */
         iconProps: {
           iconName: "ExcelLogo",
         },
-        disabled: this.state.allItems.length > 0 ? false : true,
+        disabled: this.state.allItems.length === 0,
         onClick: () => {
           this._getExcel()
             .then((res) => res)

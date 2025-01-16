@@ -101,9 +101,7 @@ IXenWpUcoBankProps,
 
       query=`StatusNumber eq '2000' or StatusNumber eq '3000' or StatusNumber eq '4000' or StatusNumber eq '5000' or StatusNumber eq '8000' or StatusNumber eq '9000' `
     }
-    else{
-      query=""
-    }
+    
     return query;
   }
   private _getItemsCount = async (listTitle: string, columnTitle: string): Promise<any> => {

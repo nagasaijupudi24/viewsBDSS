@@ -728,6 +728,67 @@ Returned -8000 */
   }
 
 
+  private _getPendingWithValue =():any=>{
+    return this.props.viewType === "PendingWith"
+    ? [ {
+      key: "Excell",
+      name: "Export CSV",
+      iconProps: {
+        iconName: "ExcelLogo",
+      },
+      disabled: this.state.allItems.length ===0,
+      onClick:() =>{
+        this._getExcel().then(res=>res).catch(err=>err)
+      },
+    },]
+    : [
+        {
+          key: "newItem",
+          name: "Create New Request",
+          iconProps: {
+            iconName: "Add",
+          },
+          split: true,
+          onClick: () => {
+            window.location.href =
+              this.props.context.pageContext.web.absoluteUrl +
+              `/SitePages/${this.props.newPageUrl}.aspx`;
+          },
+        },
+
+        {
+          key: "ViewItem",
+          name: "View Request",
+          iconProps: {
+            iconName: "View",
+          },
+          className: "viewBtnDiv",
+          disabled: this._hideCommandOption,
+          onClick: () => {
+            const item = this.state.selectionDetails;
+            if (this.state.selectedcount === 0) {
+              return;
+            } else {
+
+              window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+            }
+          },
+        },
+        {
+          key: "Excell",
+          name: "Export CSV",
+          iconProps: {
+            iconName: "ExcelLogo",
+          },
+          disabled: this.state.allItems.length ===0,
+          onClick:() =>{
+            this._getExcel().then(res=>res).catch(err=>err)
+          },
+        },
+      ];
+  }
+
+
   public render(): React.ReactElement<IXenWpUcoBankProps> {
     const { hasTeamsContext} = this.props;
     const _items =
@@ -782,63 +843,9 @@ Returned -8000 */
               },
             },
           ]
-        : this.props.viewType === "PendingWith"
-        ? [ {
-          key: "Excell",
-          name: "Export CSV",
-          iconProps: {
-            iconName: "ExcelLogo",
-          },
-          disabled: this.state.allItems.length ===0,
-          onClick:() =>{
-            this._getExcel().then(res=>res).catch(err=>err)
-          },
-        },]
-        : [
-            {
-              key: "newItem",
-              name: "Create New Request",
-              iconProps: {
-                iconName: "Add",
-              },
-              split: true,
-              onClick: () => {
-                window.location.href =
-                  this.props.context.pageContext.web.absoluteUrl +
-                  `/SitePages/${this.props.newPageUrl}.aspx`;
-              },
-            },
+        : this._getPendingWithValue()
 
-            {
-              key: "ViewItem",
-              name: "View Request",
-              iconProps: {
-                iconName: "View",
-              },
-              className: "viewBtnDiv",
-              disabled: this._hideCommandOption,
-              onClick: () => {
-                const item = this.state.selectionDetails;
-                if (this.state.selectedcount === 0) {
-                  return;
-                } else {
-
-                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                }
-              },
-            },
-            {
-              key: "Excell",
-              name: "Export CSV",
-              iconProps: {
-                iconName: "ExcelLogo",
-              },
-              disabled: this.state.allItems.length ===0,
-              onClick:() =>{
-                this._getExcel().then(res=>res).catch(err=>err)
-              },
-            },
-          ];
+        console.log(_items)
     return (
       <section
         className={`${styles.xenWpUcoBank} ${

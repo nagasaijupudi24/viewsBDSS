@@ -421,7 +421,7 @@ export default class Das extends React.Component<
             sortAscendingAriaLabel: "Sorted A to Z",
             sortDescendingAriaLabel: "Sorted Z to A",
             onRender: (item, index, column) => {
-              <Link onClick={()=>this.redirectToViewPage(item)}>{item.Title}</Link>;
+              return <Link onClick={()=>this.redirectToViewPage(item)}>{item.Title}</Link>;
             },
           },
           {
@@ -703,7 +703,7 @@ export default class Das extends React.Component<
             sortAscendingAriaLabel: "Sorted A to Z",
             sortDescendingAriaLabel: "Sorted Z to A",
             onRender: (item, index, column) => {
-              <Link onClick={()=>this.redirectToViewPage(item)}>{item.Title}</Link>;
+              return <Link onClick={()=>this.redirectToViewPage(item)}>{item.Title}</Link>;
             },
           },
           {

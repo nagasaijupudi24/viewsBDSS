@@ -27,25 +27,24 @@ import { WebPartTitle } from "@pnp/spfx-controls-react";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
 
-
 const dragOptions = {
   moveMenuItemText: "Move",
   closeMenuItemText: "Close",
 };
 const modalPropsStyles = { main: { maxWidth: 600 } };
-const dialogContentProps={
+const dialogContentProps = {
   type: DialogType.normal,
   title: (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <IconButton
-        iconProps={{ iconName: 'Info' }}
-      />
-      <span style={{ fontSize: '16px', fontWeight: 'bold',marginBottom:'5px' }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <IconButton iconProps={{ iconName: "Info" }} />
+      <span
+        style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "5px" }}
+      >
         Alert
       </span>
     </div>
   ),
-}
+};
 export interface IListViewsState {
   listItems: any[];
   columns: IColumn[];
@@ -66,8 +65,8 @@ export interface IListViewsState {
   selectionDetails: any;
   selectedcount: number;
   currentUserDetails: any;
-  isSuperAdmin:boolean,
-  isDepartmentAdmin:boolean;
+  isSuperAdmin: boolean;
+  isDepartmentAdmin: boolean;
 }
 export default class ListViews extends React.Component<
   IXenWpUcoBankProps,
@@ -235,8 +234,8 @@ export default class ListViews extends React.Component<
       selectionDetails: {},
       selectedcount: 0,
       currentUserDetails: "",
-      isDepartmentAdmin:false,
-      isSuperAdmin:false
+      isDepartmentAdmin: false,
+      isSuperAdmin: false,
     };
     const listObj = this.props.listName;
     this._listName = listObj?.title;
@@ -244,8 +243,7 @@ export default class ListViews extends React.Component<
     this.getAllrequestesData();
   }
 
-
-  private _commiteeRedirect=(item:any,user:any)=>{
+  private _commiteeRedirect = (item: any, user: any) => {
     if (
       (item.StatusNumber === "100" ||
         item.StatusNumber === "200" ||
@@ -256,9 +254,9 @@ export default class ListViews extends React.Component<
     } else {
       window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
     }
-  }
+  };
 
-  private _BoardRedirect=(item:any,user:any)=>{
+  private _BoardRedirect = (item: any, user: any) => {
     if (
       (item.StatusNumber === "100" ||
         item.StatusNumber === "200" ||
@@ -269,9 +267,9 @@ export default class ListViews extends React.Component<
     } else {
       window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
     }
-  }
+  };
 
-  private _EnoteRedirect=(item:any,user:any)=>{
+  private _EnoteRedirect = (item: any, user: any) => {
     if (
       (item.StatusNumber === "100" ||
         item.StatusNumber === "200" ||
@@ -282,1988 +280,1662 @@ export default class ListViews extends React.Component<
     } else {
       window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
     }
-  }
+  };
 
   private redirectToViewPage = async (item: any) => {
     const user = await this.props.sp?.web.currentUser();
     if (this.props.noteType === "eCommittee") {
       if (item.CommitteeType === "Committee") {
-       this._commiteeRedirect(item,user);
+        this._commiteeRedirect(item, user);
       }
       if (item.CommitteeType === "Board") {
-     this._BoardRedirect(item,user);
+        this._BoardRedirect(item, user);
       }
     } else {
-     this. _EnoteRedirect(item,user)
-      
+      this._EnoteRedirect(item, user);
     }
   };
 
-  private _EnoteDetailslistColumns=()=>{
-     const { viewType } = this.props;
-     if (viewType === "All Requests") {
-       this._columns = [
-         {
-           key: "column1",
-           name: "Note Number",
-           fieldName: "Title",
-           minWidth: 130,
-           maxWidth: 150,
-           isRowHeader: false,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: true,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <Link onClick={() => this.redirectToViewPage(item)}>
-                 {item.Title}
-               </Link>
-             );
-           },
-         },
-         {
-           key: "column2",
-           name: "Requester",
-           fieldName: "Author",
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column3",
-           name: "Department",
-           fieldName: "Department",
-           minWidth: 150,
-           maxWidth: 350,
-           isRowHeader: false,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
- 
-         {
-           key: "column4",
-           name: "Subject",
-           fieldName: "Subject",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column5",
-           name: "Current Approver",
-           fieldName: "CurrentApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column6",
-           name: "Status",
-           fieldName: "Status",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column7",
-           name: "Modified Date",
-           fieldName: "Modified",
-           minWidth: 100,
-           maxWidth: 150,
-           isMultiline: true,
-           isResizable: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Modified).toDateString() +
-                   " " +
-                   new Date(item.Modified).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
- 
-         {
-           key: "column8",
-           name: "Created Date",
-           fieldName: "Created",
-           minWidth: 100,
-           maxWidth: 150,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Created).toDateString() +
-                   " " +
-                   new Date(item.Created).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
-       ];
-     } else if (viewType === "Noted Notes") {
-       this._columns = [
-         {
-           key: "column1",
-           name: "Note Number",
-           fieldName: "Title",
-           minWidth: 130,
-           maxWidth: 150,
-           isRowHeader: false,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <Link onClick={() => this.redirectToViewPage(item)}>
-                 {item.Title}
-               </Link>
-             );
-           },
-         },
-         {
-           key: "column2",
-           name: "Requester",
-           fieldName: "Author",
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column3",
-           name: "Department",
-           fieldName: "Department",
-           minWidth: 150,
-           maxWidth: 350,
-           isRowHeader: false,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
- 
-         {
-           key: "column4",
-           name: "Subject",
-           fieldName: "Subject",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
- 
-         {
-           key: "column7",
-           name: "Modified Date",
-           fieldName: "Modified",
-           minWidth: 100,
-           maxWidth: 150,
-           isMultiline: true,
-           isResizable: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Modified).toDateString() +
-                   " " +
-                   new Date(item.Modified).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
- 
-         {
-           key: "column8",
-           name: "Created Date",
-           fieldName: "Created",
-           minWidth: 100,
-           maxWidth: 150,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Created).toDateString() +
-                   " " +
-                   new Date(item.Created).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
-       
-       ];
-     } else if (viewType === "Draft Requests") {
-       this._columns = [
-         {
-           key: "column1",
-           name: "Note Number",
-           fieldName: "Title",
-           minWidth: 130,
-           maxWidth: 150,
-           isRowHeader: false,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <Link onClick={() => this.redirectToViewPage(item)}>
-                 {item.Title}
-               </Link>
-             );
-           },
-         },
-         {
-           key: "column2",
-           name: "Requester",
-           fieldName: "Author",
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column3",
-           name: "Department",
-           fieldName: "Department",
-           minWidth: 150,
-           maxWidth: 350,
-           isRowHeader: false,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
- 
-         {
-           key: "column4",
-           name: "Subject",
-           fieldName: "Subject",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column5",
-           name: "Current Approver",
-           fieldName: "CurrentApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column6",
-           name: "Final Approver",
-           fieldName: "FinalApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column7",
-           name: "Modified Date",
-           fieldName: "Modified",
-           minWidth: 100,
-           maxWidth: 150,
-           isMultiline: true,
-           isResizable: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Modified).toDateString() +
-                   " " +
-                   new Date(item.Modified).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
- 
-         {
-           key: "column8",
-           name: "Created Date",
-           fieldName: "Created",
-           minWidth: 100,
-           maxWidth: 150,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Created).toDateString() +
-                   " " +
-                   new Date(item.Created).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
-       ];
-     }
-      else if (
-       viewType === "In Progress" ||
-       viewType === "All Approved" ||
-       viewType === "All Rejected"
-     ) {
-       this._columns = [
-         {
-           key: "column1",
-           name: "Note Number",
-           fieldName: "Title",
-           minWidth: 130,
-           maxWidth: 150,
-           isRowHeader: false,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <Link onClick={() => this.redirectToViewPage(item)}>
-                 {item.Title}
-               </Link>
-             );
-           },
-         },
-         {
-           key: "column2",
-           name: "Requester",
-           fieldName: "Author",
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column3",
-           name: "Department",
-           fieldName: "Department",
-           minWidth: 150,
-           maxWidth: 350,
-           isRowHeader: false,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
- 
-         {
-           key: "column4",
-           name: "Subject",
-           fieldName: "Subject",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column5",
-           name: "Current Approver",
-           fieldName: "CurrentApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column6",
-           name: "Final Approver",
-           fieldName: "FinalApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column7",
-           name: "Modified Date",
-           fieldName: "Modified",
-           minWidth: 100,
-           maxWidth: 150,
-           isMultiline: true,
-           isResizable: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Modified).toDateString() +
-                   " " +
-                   new Date(item.Modified).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
- 
-         {
-           key: "column8",
-           name: "Created Date",
-           fieldName: "Created",
-           minWidth: 100,
-           maxWidth: 150,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Created).toDateString() +
-                   " " +
-                   new Date(item.Created).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
-       ];
-     } else if (
-       viewType === "mypendingnotes" ||
-       viewType === "MyReferredNotes" ||
-       viewType === "MyReturnedNotes" ||
-       viewType === "MyApprovedNotes" ||
-       viewType === "EDMDNotes"
-     ) {
-       this._columns = [
-         {
-           key: "column1",
-           name: "Note Number",
-           fieldName: "Title",
-           minWidth: 130,
-           maxWidth: 150,
-           isRowHeader: false,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <Link onClick={() => this.redirectToViewPage(item)}>
-                 {item.Title}
-               </Link>
-             );
-           },
-         },
-         {
-           key: "column2",
-           name: "Requester",
-           fieldName: "Author",
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column3",
-           name: "Department",
-           fieldName: "Department",
-           minWidth: 150,
-           maxWidth: 350,
-           isRowHeader: false,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
- 
-         {
-           key: "column4",
-           name: "Subject",
-           fieldName: "Subject",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column66",
-           name: "Status",
-           fieldName: "Status",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column5",
-           name: "PreviousApprover",
-           fieldName: "Previous Approver",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column6",
-           name: "Final Approver",
-           fieldName: "FinalApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column7",
-           name: "Modified Date",
-           fieldName: "Modified",
-           minWidth: 100,
-           maxWidth: 150,
-           isMultiline: true,
-           isResizable: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Modified).toDateString() +
-                   " " +
-                   new Date(item.Modified).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
- 
-         {
-           key: "column8",
-           name: "Created Date",
-           fieldName: "Created",
-           minWidth: 100,
-           maxWidth: 150,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Created).toDateString() +
-                   " " +
-                   new Date(item.Created).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
-       ];
-     } else if (viewType === "PendingWith") {
-       this._PendingWithDetailslistColumns();
-     
-     } else {
-     this._defalutDetailslistColumns();
-     }
- 
-     return this._columns;
-   }
- 
-   private _EcommiteeeDetailslistColumns=()=>{
-     const { viewType } = this.props;
-     if (viewType === "All Requests") {
-       this._columns = [
-         {
-           key: "column1",
-           name: "Note Number",
-           fieldName: "Title",
-           minWidth: 130,
-           maxWidth: 150,
-           isRowHeader: false,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: true,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <Link onClick={() => this.redirectToViewPage(item)}>
-                 {item.Title}
-               </Link>
-             );
-           },
-         },
-         {
-           key: "column2",
-           name: "Requester",
-           fieldName: "Author",
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column3",
-           name: "Department",
-           fieldName: "Department",
-           minWidth: 150,
-           maxWidth: 350,
-           isRowHeader: false,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         this.props.noteType &&
-           this.props.noteType === "eCommittee" && {
-             key: "column33",
-             name: "Board/Committee Name",
-             fieldName: "committeeName",
-             minWidth: 150,
-             maxWidth: 350,
-             isRowHeader: false,
-             isResizable: true,
-             data: "string",
-             isMultiline: true,
-             onColumnClick: this._onColumnClick,
-             isSorted: false,
-             isSortedDescending: false,
-             sortAscendingAriaLabel: "Sorted A to Z",
-             sortDescendingAriaLabel: "Sorted Z to A",
-           },
-         {
-           key: "column4",
-           name: "Subject",
-           fieldName: "Subject",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column5",
-           name: "Current Approver",
-           fieldName: "CurrentApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column6",
-           name: "Status",
-           fieldName: "Status",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column7",
-           name: "Modified Date",
-           fieldName: "Modified",
-           minWidth: 100,
-           maxWidth: 150,
-           isMultiline: true,
-           isResizable: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Modified).toDateString() +
-                   " " +
-                   new Date(item.Modified).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
- 
-         {
-           key: "column8",
-           name: "Created Date",
-           fieldName: "Created",
-           minWidth: 100,
-           maxWidth: 150,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Created).toDateString() +
-                   " " +
-                   new Date(item.Created).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
-        
-       ];
-     } else if (viewType === "Noted Notes") {
-       this._columns = [
-         {
-           key: "column1",
-           name: "Note Number",
-           fieldName: "Title",
-           minWidth: 130,
-           maxWidth: 150,
-           isRowHeader: false,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <Link onClick={() => this.redirectToViewPage(item)}>
-                 {item.Title}
-               </Link>
-             );
-           },
-         },
-         {
-           key: "column2",
-           name: "Requester",
-           fieldName: "Author",
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column3",
-           name: "Department",
-           fieldName: "Department",
-           minWidth: 150,
-           maxWidth: 350,
-           isRowHeader: false,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
- 
-         this.props.noteType &&
-           this.props.noteType === "eCommittee" && {
-             key: "column33",
-             name: "Board/Committee Name",
-             fieldName: "committeeName",
-             minWidth: 150,
-             maxWidth: 350,
-             isRowHeader: false,
-             isResizable: true,
-             data: "string",
-             isMultiline: true,
-             onColumnClick: this._onColumnClick,
-             isSorted: false,
-             isSortedDescending: false,
-             sortAscendingAriaLabel: "Sorted A to Z",
-             sortDescendingAriaLabel: "Sorted Z to A",
-           },
-         {
-           key: "column4",
-           name: "Subject",
-           fieldName: "Subject",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
- 
-         {
-           key: "column7",
-           name: "Modified Date",
-           fieldName: "Modified",
-           minWidth: 100,
-           maxWidth: 150,
-           isMultiline: true,
-           isResizable: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Modified).toDateString() +
-                   " " +
-                   new Date(item.Modified).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
- 
-         {
-           key: "column8",
-           name: "Created Date",
-           fieldName: "Created",
-           minWidth: 100,
-           maxWidth: 150,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Created).toDateString() +
-                   " " +
-                   new Date(item.Created).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
-       ];
-     } else if (viewType === "Draft Requests") {
-       this._columns = [
-         {
-           key: "column1",
-           name: "Note Number",
-           fieldName: "Title",
-           minWidth: 130,
-           maxWidth: 150,
-           isRowHeader: false,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <Link onClick={() => this.redirectToViewPage(item)}>
-                 {item.Title}
-               </Link>
-             );
-           },
-         },
-         {
-           key: "column2",
-           name: "Requester",
-           fieldName: "Author",
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column3",
-           name: "Department",
-           fieldName: "Department",
-           minWidth: 150,
-           maxWidth: 350,
-           isRowHeader: false,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         this.props.noteType &&
-           this.props.noteType === "eCommittee" && {
-             key: "column33",
-             name: "Board/Committee Name",
-             fieldName: "committeeName",
-             minWidth: 150,
-             maxWidth: 350,
-             isRowHeader: false,
-             isResizable: true,
-             data: "string",
-             isMultiline: true,
-             onColumnClick: this._onColumnClick,
-             isSorted: false,
-             isSortedDescending: false,
-             sortAscendingAriaLabel: "Sorted A to Z",
-             sortDescendingAriaLabel: "Sorted Z to A",
-           },
-         {
-           key: "column4",
-           name: "Subject",
-           fieldName: "Subject",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column5",
-           name: "Current Approver",
-           fieldName: "CurrentApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column6",
-           name: "Final Approver",
-           fieldName: "FinalApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column7",
-           name: "Modified Date",
-           fieldName: "Modified",
-           minWidth: 100,
-           maxWidth: 150,
-           isMultiline: true,
-           isResizable: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Modified).toDateString() +
-                   " " +
-                   new Date(item.Modified).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
- 
-         {
-           key: "column8",
-           name: "Created Date",
-           fieldName: "Created",
-           minWidth: 100,
-           maxWidth: 150,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Created).toDateString() +
-                   " " +
-                   new Date(item.Created).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
-       ];
-     } else if (
-       viewType === "In Progress" ||
-       viewType === "All Approved" ||
-       viewType === "All Rejected"
-     ) {
-       this._columns = [
-         {
-           key: "column1",
-           name: "Note Number",
-           fieldName: "Title",
-           minWidth: 130,
-           maxWidth: 150,
-           isRowHeader: false,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <Link onClick={() => this.redirectToViewPage(item)}>
-                 {item.Title}
-               </Link>
-             );
-           },
-         },
-         {
-           key: "column2",
-           name: "Requester",
-           fieldName: "Author",
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column3",
-           name: "Department",
-           fieldName: "Department",
-           minWidth: 150,
-           maxWidth: 350,
-           isRowHeader: false,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         this.props.noteType &&
-           this.props.noteType === "eCommittee" && {
-             key: "column33",
-             name: "Board/Committee Name",
-             fieldName: "committeeName",
-             minWidth: 150,
-             maxWidth: 350,
-             isRowHeader: false,
-             isResizable: true,
-             data: "string",
-             isMultiline: true,
-             onColumnClick: this._onColumnClick,
-             isSorted: false,
-             isSortedDescending: false,
-             sortAscendingAriaLabel: "Sorted A to Z",
-             sortDescendingAriaLabel: "Sorted Z to A",
-           },
-         {
-           key: "column4",
-           name: "Subject",
-           fieldName: "Subject",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column5",
-           name: "Current Approver",
-           fieldName: "CurrentApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column6",
-           name: "Final Approver",
-           fieldName: "FinalApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column7",
-           name: "Modified Date",
-           fieldName: "Modified",
-           minWidth: 100,
-           maxWidth: 150,
-           isMultiline: true,
-           isResizable: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Modified).toDateString() +
-                   " " +
-                   new Date(item.Modified).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
- 
-         {
-           key: "column8",
-           name: "Created Date",
-           fieldName: "Created",
-           minWidth: 100,
-           maxWidth: 150,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Created).toDateString() +
-                   " " +
-                   new Date(item.Created).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
-       ];
-     } else if (
-       viewType === "mypendingnotes" ||
-       viewType === "MyReferredNotes" ||
-       viewType === "MyReturnedNotes" ||
-       viewType === "MyApprovedNotes" ||
-       viewType === "EDMDNotes"
-     ) {
-       this._columns = [
-         {
-           key: "column1",
-           name: "Note Number",
-           fieldName: "Title",
-           minWidth: 130,
-           maxWidth: 150,
-           isRowHeader: false,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <Link onClick={() => this.redirectToViewPage(item)}>
-                 {item.Title}
-               </Link>
-             );
-           },
-         },
-         {
-           key: "column2",
-           name: "Requester",
-           fieldName: "Author",
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column3",
-           name: "Department",
-           fieldName: "Department",
-           minWidth: 150,
-           maxWidth: 350,
-           isRowHeader: false,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         this.props.noteType &&
-           this.props.noteType === "eCommittee" && {
-             key: "column33",
-             name: "Board/Committee Name",
-             fieldName: "committeeName",
-             minWidth: 150,
-             maxWidth: 350,
-             isRowHeader: false,
-             isResizable: true,
-             data: "string",
-             isMultiline: true,
-             onColumnClick: this._onColumnClick,
-             isSorted: false,
-             isSortedDescending: false,
-             sortAscendingAriaLabel: "Sorted A to Z",
-             sortDescendingAriaLabel: "Sorted Z to A",
-           },
-         {
-           key: "column4",
-           name: "Subject",
-           fieldName: "Subject",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column66",
-           name: "Status",
-           fieldName: "Status",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column5",
-           name: "PreviousApprover",
-           fieldName: "Previous Approver",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column6",
-           name: "Final Approver",
-           fieldName: "FinalApprover",
- 
-           minWidth: 150,
-           maxWidth: 300,
-           isResizable: true,
-           data: "string",
-           isMultiline: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-         },
-         {
-           key: "column7",
-           name: "Modified Date",
-           fieldName: "Modified",
-           minWidth: 100,
-           maxWidth: 150,
-           isMultiline: true,
-           isResizable: true,
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Modified).toDateString() +
-                   " " +
-                   new Date(item.Modified).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
- 
-         {
-           key: "column8",
-           name: "Created Date",
-           fieldName: "Created",
-           minWidth: 100,
-           maxWidth: 150,
-           isResizable: true,
-           isMultiline: true,
-           data: "string",
-           onColumnClick: this._onColumnClick,
-           isSorted: false,
-           isSortedDescending: false,
-           sortAscendingAriaLabel: "Sorted A to Z",
-           sortDescendingAriaLabel: "Sorted Z to A",
-           onRender: (item, index, column) => {
-             return (
-               <span>
-                 {new Date(item.Created).toDateString() +
-                   " " +
-                   new Date(item.Created).toLocaleTimeString()}
-               </span>
-             );
-           },
-         },
-       ];
-     } else if (viewType === "PendingWith") {
-   this._PendingWithDetailslistColumns();
-     } else {
-      this. _defalutDetailslistColumns();
-     }
-     return this._columns;
-   }
- 
-   private _PendingWithDetailslistColumns=()=>{
-     this._columns = [
-       {
-         key: "column1",
-         name: "S.No",
-         fieldName: "ID",
-         minWidth: 50,
-         maxWidth: 100,
-         isRowHeader: false,
-         isResizable: true,
-         isMultiline: true,
-         data: "string",
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-         onRender: (item, index, column) => {
-           return index ? index + 1 : null;
-         },
-       },
-       {
-         key: "column2",
-         name: "Pending With",
-         fieldName: "CurrentApprover",
-         minWidth: 150,
-         maxWidth: 300,
-         isResizable: true,
-         data: "string",
-         isMultiline: true,
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-       },
-       {
-         key: "column3",
-         name: "Designation",
-         fieldName: "crntApproverObject",
-         minWidth: 150,
-         maxWidth: 350,
-         isRowHeader: false,
-         isResizable: true,
-         data: "string",
-         isMultiline: true,
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-         onRender: (item, index, column) => {
-           if (item.crntApproverObject) {
-             return item.crntApproverObject?.JobTitle;
-           } else {
-             return null;
-           }
-         },
-       },
-       {
-         key: "column4",
-         name: "SrNo",
-         fieldName: "crntApproverObject",
- 
-         minWidth: 150,
-         maxWidth: 300,
-         isResizable: true,
-         data: "string",
-         isMultiline: true,
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-         onRender: (item, index, column) => {
-           if (item.crntApproverObject) {
-             const SrNo = item.crntApproverObject?.EMail.split("@")[0];
-             return SrNo;
-           } else {
-             return null;
-           }
-         },
-       },
-       {
-         key: "column5",
-         name: "Count",
-         fieldName: "count",
- 
-         minWidth: 150,
-         maxWidth: 300,
-         isResizable: true,
-         data: "string",
-         isMultiline: true,
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-       },
-     ];
-   }
- 
-   private _defalutDetailslistColumns=()=>{
-     this._columns = [
-       {
-         key: "column1",
-         name: "Note Number",
-         fieldName: "Title",
-         minWidth: 130,
-         maxWidth: 150,
-         isRowHeader: false,
-         isResizable: true,
-         isMultiline: true,
-         data: "string",
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-         onRender: (item, index, column) => {
-           return (
-             <Link onClick={() => this.redirectToViewPage(item)}>
-               {item.Title}
-             </Link>
-           );
-         },
-       },
-       {
-         key: "column2",
-         name: "Requester",
-         fieldName: "Author",
-         minWidth: 150,
-         maxWidth: 300,
-         isResizable: true,
-         data: "string",
-         isMultiline: true,
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-       },
-       {
-         key: "column3",
-         name: "Department",
-         fieldName: "Department",
-         minWidth: 150,
-         maxWidth: 350,
-         isRowHeader: false,
-         isResizable: true,
-         data: "string",
-         isMultiline: true,
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-       },
-       {
-         key: "column4",
-         name: "Subject",
-         fieldName: "Subject",
- 
-         minWidth: 150,
-         maxWidth: 300,
-         isResizable: true,
-         data: "string",
-         isMultiline: true,
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-       },
-       {
-         key: "column5",
-         name: "Current Approver",
-         fieldName: "CurrentApprover",
- 
-         minWidth: 150,
-         maxWidth: 300,
-         isResizable: true,
-         data: "string",
-         isMultiline: true,
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-       },
-       {
-         key: "column6",
-         name: "Final Approver",
-         fieldName: "FinalApprover",
- 
-         minWidth: 150,
-         maxWidth: 300,
-         isResizable: true,
-         data: "string",
-         isMultiline: true,
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-       },
-       {
-         key: "column7",
-         name: "Modified Date",
-         fieldName: "Modified",
-         minWidth: 100,
-         maxWidth: 150,
-         isMultiline: true,
-         isResizable: true,
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-         onRender: (item, index, column) => {
-           return (
-             <span>
-               {new Date(item.Modified).toDateString() +
-                 " " +
-                 new Date(item.Modified).toLocaleTimeString()}
-             </span>
-           );
-         },
-       },
- 
-       {
-         key: "column8",
-         name: "Created Date",
-         fieldName: "Created",
-         minWidth: 100,
-         maxWidth: 150,
-         isResizable: true,
-         isMultiline: true,
-         data: "string",
-         onColumnClick: this._onColumnClick,
-         isSorted: false,
-         isSortedDescending: false,
-         sortAscendingAriaLabel: "Sorted A to Z",
-         sortDescendingAriaLabel: "Sorted Z to A",
-         onRender: (item, index, column) => {
-           return (
-             <span>
-               {new Date(item.Created).toDateString() +
-                 " " +
-                 new Date(item.Created).toLocaleTimeString()}
-             </span>
-           );
-         },
-       },
-     ];
-   }
-  
-   private _bindColumns = () => {  
-     const {  noteType } = this.props;
-     if (noteType === "enote") {
-      this. _EnoteDetailslistColumns()
-     
-     } else if (noteType === "eCommittee") {
-       this._EcommiteeeDetailslistColumns()
-     }
- 
-   return this._columns;
- 
-   };
+  private _EnoteDetailslistColumns = () => {
+    const { viewType } = this.props;
+    if (viewType === "All Requests") {
+      this._columns = [
+        {
+          key: "column1",
+          name: "Note Number",
+          fieldName: "Title",
+          minWidth: 130,
+          maxWidth: 150,
+          isRowHeader: false,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: true,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <Link onClick={() => this.redirectToViewPage(item)}>
+                {item.Title}
+              </Link>
+            );
+          },
+        },
+        {
+          key: "column2",
+          name: "Requester",
+          fieldName: "Author",
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column3",
+          name: "Department",
+          fieldName: "Department",
+          minWidth: 150,
+          maxWidth: 350,
+          isRowHeader: false,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
 
+        {
+          key: "column4",
+          name: "Subject",
+          fieldName: "Subject",
 
-  private _formatDate=(date:Date) =>{
-    if (!(date instanceof Date)) {
-        throw new Error('Invalid date');
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column5",
+          name: "Current Approver",
+          fieldName: "CurrentApprover",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column6",
+          name: "Status",
+          fieldName: "Status",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column7",
+          name: "Modified Date",
+          fieldName: "Modified",
+          minWidth: 100,
+          maxWidth: 150,
+          isMultiline: true,
+          isResizable: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Modified).toDateString() +
+                  " " +
+                  new Date(item.Modified).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+
+        {
+          key: "column8",
+          name: "Created Date",
+          fieldName: "Created",
+          minWidth: 100,
+          maxWidth: 150,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Created).toDateString() +
+                  " " +
+                  new Date(item.Created).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+      ];
+    } else if (viewType === "Noted Notes") {
+      this._columns = [
+        {
+          key: "column1",
+          name: "Note Number",
+          fieldName: "Title",
+          minWidth: 130,
+          maxWidth: 150,
+          isRowHeader: false,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <Link onClick={() => this.redirectToViewPage(item)}>
+                {item.Title}
+              </Link>
+            );
+          },
+        },
+        {
+          key: "column2",
+          name: "Requester",
+          fieldName: "Author",
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column3",
+          name: "Department",
+          fieldName: "Department",
+          minWidth: 150,
+          maxWidth: 350,
+          isRowHeader: false,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+
+        {
+          key: "column4",
+          name: "Subject",
+          fieldName: "Subject",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+
+        {
+          key: "column7",
+          name: "Modified Date",
+          fieldName: "Modified",
+          minWidth: 100,
+          maxWidth: 150,
+          isMultiline: true,
+          isResizable: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Modified).toDateString() +
+                  " " +
+                  new Date(item.Modified).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+
+        {
+          key: "column8",
+          name: "Created Date",
+          fieldName: "Created",
+          minWidth: 100,
+          maxWidth: 150,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Created).toDateString() +
+                  " " +
+                  new Date(item.Created).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+      ];
+    } else if (
+      viewType === "In Progress" ||
+      viewType === "All Approved" ||
+      viewType === "All Rejected" ||
+      viewType === "Draft Requests"
+    ) {
+      this._columns = [
+        {
+          key: "column1",
+          name: "Note Number",
+          fieldName: "Title",
+          minWidth: 130,
+          maxWidth: 150,
+          isRowHeader: false,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <Link onClick={() => this.redirectToViewPage(item)}>
+                {item.Title}
+              </Link>
+            );
+          },
+        },
+        {
+          key: "column2",
+          name: "Requester",
+          fieldName: "Author",
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column3",
+          name: "Department",
+          fieldName: "Department",
+          minWidth: 150,
+          maxWidth: 350,
+          isRowHeader: false,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+
+        {
+          key: "column4",
+          name: "Subject",
+          fieldName: "Subject",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column5",
+          name: "Current Approver",
+          fieldName: "CurrentApprover",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column6",
+          name: "Final Approver",
+          fieldName: "FinalApprover",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column7",
+          name: "Modified Date",
+          fieldName: "Modified",
+          minWidth: 100,
+          maxWidth: 150,
+          isMultiline: true,
+          isResizable: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Modified).toDateString() +
+                  " " +
+                  new Date(item.Modified).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+
+        {
+          key: "column8",
+          name: "Created Date",
+          fieldName: "Created",
+          minWidth: 100,
+          maxWidth: 150,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Created).toDateString() +
+                  " " +
+                  new Date(item.Created).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+      ];
+    } else if (
+      viewType === "mypendingnotes" ||
+      viewType === "MyReferredNotes" ||
+      viewType === "MyReturnedNotes" ||
+      viewType === "MyApprovedNotes" ||
+      viewType === "EDMDNotes"
+    ) {
+      this._columns = [
+        {
+          key: "column1",
+          name: "Note Number",
+          fieldName: "Title",
+          minWidth: 130,
+          maxWidth: 150,
+          isRowHeader: false,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <Link onClick={() => this.redirectToViewPage(item)}>
+                {item.Title}
+              </Link>
+            );
+          },
+        },
+        {
+          key: "column2",
+          name: "Requester",
+          fieldName: "Author",
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column3",
+          name: "Department",
+          fieldName: "Department",
+          minWidth: 150,
+          maxWidth: 350,
+          isRowHeader: false,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+
+        {
+          key: "column4",
+          name: "Subject",
+          fieldName: "Subject",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column66",
+          name: "Status",
+          fieldName: "Status",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column5",
+          name: "PreviousApprover",
+          fieldName: "Previous Approver",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column6",
+          name: "Final Approver",
+          fieldName: "FinalApprover",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column7",
+          name: "Modified Date",
+          fieldName: "Modified",
+          minWidth: 100,
+          maxWidth: 150,
+          isMultiline: true,
+          isResizable: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Modified).toDateString() +
+                  " " +
+                  new Date(item.Modified).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+
+        {
+          key: "column8",
+          name: "Created Date",
+          fieldName: "Created",
+          minWidth: 100,
+          maxWidth: 150,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Created).toDateString() +
+                  " " +
+                  new Date(item.Created).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+      ];
+    } else if (viewType === "PendingWith") {
+      this._PendingWithDetailslistColumns();
+    } else {
+      this._defalutDetailslistColumns();
     }
 
-    let day = date.getDate().toString().padStart(2, '0');
-    let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed
+    return this._columns;
+  };
+
+  private _EcommiteeeDetailslistColumns = () => {
+    const { viewType } = this.props;
+    if (viewType === "All Requests") {
+      this._columns = [
+        {
+          key: "column1",
+          name: "Note Number",
+          fieldName: "Title",
+          minWidth: 130,
+          maxWidth: 150,
+          isRowHeader: false,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: true,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <Link onClick={() => this.redirectToViewPage(item)}>
+                {item.Title}
+              </Link>
+            );
+          },
+        },
+        {
+          key: "column2",
+          name: "Requester",
+          fieldName: "Author",
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column3",
+          name: "Department",
+          fieldName: "Department",
+          minWidth: 150,
+          maxWidth: 350,
+          isRowHeader: false,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        this.props.noteType &&
+          this.props.noteType === "eCommittee" && {
+            key: "column33",
+            name: "Board/Committee Name",
+            fieldName: "committeeName",
+            minWidth: 150,
+            maxWidth: 350,
+            isRowHeader: false,
+            isResizable: true,
+            data: "string",
+            isMultiline: true,
+            onColumnClick: this._onColumnClick,
+            isSorted: false,
+            isSortedDescending: false,
+            sortAscendingAriaLabel: "Sorted A to Z",
+            sortDescendingAriaLabel: "Sorted Z to A",
+          },
+        {
+          key: "column4",
+          name: "Subject",
+          fieldName: "Subject",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column5",
+          name: "Current Approver",
+          fieldName: "CurrentApprover",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column6",
+          name: "Status",
+          fieldName: "Status",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column7",
+          name: "Modified Date",
+          fieldName: "Modified",
+          minWidth: 100,
+          maxWidth: 150,
+          isMultiline: true,
+          isResizable: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Modified).toDateString() +
+                  " " +
+                  new Date(item.Modified).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+
+        {
+          key: "column8",
+          name: "Created Date",
+          fieldName: "Created",
+          minWidth: 100,
+          maxWidth: 150,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Created).toDateString() +
+                  " " +
+                  new Date(item.Created).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+      ];
+    } else if (viewType === "Noted Notes") {
+      this._columns = [
+        {
+          key: "column1",
+          name: "Note Number",
+          fieldName: "Title",
+          minWidth: 130,
+          maxWidth: 150,
+          isRowHeader: false,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <Link onClick={() => this.redirectToViewPage(item)}>
+                {item.Title}
+              </Link>
+            );
+          },
+        },
+        {
+          key: "column2",
+          name: "Requester",
+          fieldName: "Author",
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column3",
+          name: "Department",
+          fieldName: "Department",
+          minWidth: 150,
+          maxWidth: 350,
+          isRowHeader: false,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+
+        this.props.noteType &&
+          this.props.noteType === "eCommittee" && {
+            key: "column33",
+            name: "Board/Committee Name",
+            fieldName: "committeeName",
+            minWidth: 150,
+            maxWidth: 350,
+            isRowHeader: false,
+            isResizable: true,
+            data: "string",
+            isMultiline: true,
+            onColumnClick: this._onColumnClick,
+            isSorted: false,
+            isSortedDescending: false,
+            sortAscendingAriaLabel: "Sorted A to Z",
+            sortDescendingAriaLabel: "Sorted Z to A",
+          },
+        {
+          key: "column4",
+          name: "Subject",
+          fieldName: "Subject",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+
+        {
+          key: "column7",
+          name: "Modified Date",
+          fieldName: "Modified",
+          minWidth: 100,
+          maxWidth: 150,
+          isMultiline: true,
+          isResizable: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Modified).toDateString() +
+                  " " +
+                  new Date(item.Modified).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+
+        {
+          key: "column8",
+          name: "Created Date",
+          fieldName: "Created",
+          minWidth: 100,
+          maxWidth: 150,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Created).toDateString() +
+                  " " +
+                  new Date(item.Created).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+      ];
+    } else if (
+      viewType === "In Progress" ||
+      viewType === "All Approved" ||
+      viewType === "All Rejected" ||
+      viewType === "Draft Requests"
+    ) {
+      this._columns = [
+        {
+          key: "column1",
+          name: "Note Number",
+          fieldName: "Title",
+          minWidth: 130,
+          maxWidth: 150,
+          isRowHeader: false,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <Link onClick={() => this.redirectToViewPage(item)}>
+                {item.Title}
+              </Link>
+            );
+          },
+        },
+        {
+          key: "column2",
+          name: "Requester",
+          fieldName: "Author",
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column3",
+          name: "Department",
+          fieldName: "Department",
+          minWidth: 150,
+          maxWidth: 350,
+          isRowHeader: false,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        this.props.noteType &&
+          this.props.noteType === "eCommittee" && {
+            key: "column33",
+            name: "Board/Committee Name",
+            fieldName: "committeeName",
+            minWidth: 150,
+            maxWidth: 350,
+            isRowHeader: false,
+            isResizable: true,
+            data: "string",
+            isMultiline: true,
+            onColumnClick: this._onColumnClick,
+            isSorted: false,
+            isSortedDescending: false,
+            sortAscendingAriaLabel: "Sorted A to Z",
+            sortDescendingAriaLabel: "Sorted Z to A",
+          },
+        {
+          key: "column4",
+          name: "Subject",
+          fieldName: "Subject",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column5",
+          name: "Current Approver",
+          fieldName: "CurrentApprover",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column6",
+          name: "Final Approver",
+          fieldName: "FinalApprover",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column7",
+          name: "Modified Date",
+          fieldName: "Modified",
+          minWidth: 100,
+          maxWidth: 150,
+          isMultiline: true,
+          isResizable: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Modified).toDateString() +
+                  " " +
+                  new Date(item.Modified).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+
+        {
+          key: "column8",
+          name: "Created Date",
+          fieldName: "Created",
+          minWidth: 100,
+          maxWidth: 150,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Created).toDateString() +
+                  " " +
+                  new Date(item.Created).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+      ];
+    } else if (
+      viewType === "mypendingnotes" ||
+      viewType === "MyReferredNotes" ||
+      viewType === "MyReturnedNotes" ||
+      viewType === "MyApprovedNotes" ||
+      viewType === "EDMDNotes"
+    ) {
+      this._columns = [
+        {
+          key: "column1",
+          name: "Note Number",
+          fieldName: "Title",
+          minWidth: 130,
+          maxWidth: 150,
+          isRowHeader: false,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <Link onClick={() => this.redirectToViewPage(item)}>
+                {item.Title}
+              </Link>
+            );
+          },
+        },
+        {
+          key: "column2",
+          name: "Requester",
+          fieldName: "Author",
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column3",
+          name: "Department",
+          fieldName: "Department",
+          minWidth: 150,
+          maxWidth: 350,
+          isRowHeader: false,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        this.props.noteType &&
+          this.props.noteType === "eCommittee" && {
+            key: "column33",
+            name: "Board/Committee Name",
+            fieldName: "committeeName",
+            minWidth: 150,
+            maxWidth: 350,
+            isRowHeader: false,
+            isResizable: true,
+            data: "string",
+            isMultiline: true,
+            onColumnClick: this._onColumnClick,
+            isSorted: false,
+            isSortedDescending: false,
+            sortAscendingAriaLabel: "Sorted A to Z",
+            sortDescendingAriaLabel: "Sorted Z to A",
+          },
+        {
+          key: "column4",
+          name: "Subject",
+          fieldName: "Subject",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column66",
+          name: "Status",
+          fieldName: "Status",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column5",
+          name: "PreviousApprover",
+          fieldName: "Previous Approver",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column6",
+          name: "Final Approver",
+          fieldName: "FinalApprover",
+
+          minWidth: 150,
+          maxWidth: 300,
+          isResizable: true,
+          data: "string",
+          isMultiline: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+        },
+        {
+          key: "column7",
+          name: "Modified Date",
+          fieldName: "Modified",
+          minWidth: 100,
+          maxWidth: 150,
+          isMultiline: true,
+          isResizable: true,
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Modified).toDateString() +
+                  " " +
+                  new Date(item.Modified).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+
+        {
+          key: "column8",
+          name: "Created Date",
+          fieldName: "Created",
+          minWidth: 100,
+          maxWidth: 150,
+          isResizable: true,
+          isMultiline: true,
+          data: "string",
+          onColumnClick: this._onColumnClick,
+          isSorted: false,
+          isSortedDescending: false,
+          sortAscendingAriaLabel: "Sorted A to Z",
+          sortDescendingAriaLabel: "Sorted Z to A",
+          onRender: (item, index, column) => {
+            return (
+              <span>
+                {new Date(item.Created).toDateString() +
+                  " " +
+                  new Date(item.Created).toLocaleTimeString()}
+              </span>
+            );
+          },
+        },
+      ];
+    } else if (viewType === "PendingWith") {
+      this._PendingWithDetailslistColumns();
+    } else {
+      this._defalutDetailslistColumns();
+    }
+    return this._columns;
+  };
+
+  private _PendingWithDetailslistColumns = () => {
+    this._columns = [
+      {
+        key: "column1",
+        name: "S.No",
+        fieldName: "ID",
+        minWidth: 50,
+        maxWidth: 100,
+        isRowHeader: false,
+        isResizable: true,
+        isMultiline: true,
+        data: "string",
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+        onRender: (item, index, column) => {
+          return index ? index + 1 : null;
+        },
+      },
+      {
+        key: "column2",
+        name: "Pending With",
+        fieldName: "CurrentApprover",
+        minWidth: 150,
+        maxWidth: 300,
+        isResizable: true,
+        data: "string",
+        isMultiline: true,
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+      },
+      {
+        key: "column3",
+        name: "Designation",
+        fieldName: "crntApproverObject",
+        minWidth: 150,
+        maxWidth: 350,
+        isRowHeader: false,
+        isResizable: true,
+        data: "string",
+        isMultiline: true,
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+        onRender: (item, index, column) => {
+          if (item.crntApproverObject) {
+            return item.crntApproverObject?.JobTitle;
+          } else {
+            return null;
+          }
+        },
+      },
+      {
+        key: "column4",
+        name: "SrNo",
+        fieldName: "crntApproverObject",
+
+        minWidth: 150,
+        maxWidth: 300,
+        isResizable: true,
+        data: "string",
+        isMultiline: true,
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+        onRender: (item, index, column) => {
+          if (item.crntApproverObject) {
+            const SrNo = item.crntApproverObject?.EMail.split("@")[0];
+            return SrNo;
+          } else {
+            return null;
+          }
+        },
+      },
+      {
+        key: "column5",
+        name: "Count",
+        fieldName: "count",
+
+        minWidth: 150,
+        maxWidth: 300,
+        isResizable: true,
+        data: "string",
+        isMultiline: true,
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+      },
+    ];
+  };
+
+  private _defalutDetailslistColumns = () => {
+    this._columns = [
+      {
+        key: "column1",
+        name: "Note Number",
+        fieldName: "Title",
+        minWidth: 130,
+        maxWidth: 150,
+        isRowHeader: false,
+        isResizable: true,
+        isMultiline: true,
+        data: "string",
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+        onRender: (item, index, column) => {
+          return (
+            <Link onClick={() => this.redirectToViewPage(item)}>
+              {item.Title}
+            </Link>
+          );
+        },
+      },
+      {
+        key: "column2",
+        name: "Requester",
+        fieldName: "Author",
+        minWidth: 150,
+        maxWidth: 300,
+        isResizable: true,
+        data: "string",
+        isMultiline: true,
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+      },
+      {
+        key: "column3",
+        name: "Department",
+        fieldName: "Department",
+        minWidth: 150,
+        maxWidth: 350,
+        isRowHeader: false,
+        isResizable: true,
+        data: "string",
+        isMultiline: true,
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+      },
+      {
+        key: "column4",
+        name: "Subject",
+        fieldName: "Subject",
+
+        minWidth: 150,
+        maxWidth: 300,
+        isResizable: true,
+        data: "string",
+        isMultiline: true,
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+      },
+      {
+        key: "column5",
+        name: "Current Approver",
+        fieldName: "CurrentApprover",
+
+        minWidth: 150,
+        maxWidth: 300,
+        isResizable: true,
+        data: "string",
+        isMultiline: true,
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+      },
+      {
+        key: "column6",
+        name: "Final Approver",
+        fieldName: "FinalApprover",
+
+        minWidth: 150,
+        maxWidth: 300,
+        isResizable: true,
+        data: "string",
+        isMultiline: true,
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+      },
+      {
+        key: "column7",
+        name: "Modified Date",
+        fieldName: "Modified",
+        minWidth: 100,
+        maxWidth: 150,
+        isMultiline: true,
+        isResizable: true,
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+        onRender: (item, index, column) => {
+          return (
+            <span>
+              {new Date(item.Modified).toDateString() +
+                " " +
+                new Date(item.Modified).toLocaleTimeString()}
+            </span>
+          );
+        },
+      },
+
+      {
+        key: "column8",
+        name: "Created Date",
+        fieldName: "Created",
+        minWidth: 100,
+        maxWidth: 150,
+        isResizable: true,
+        isMultiline: true,
+        data: "string",
+        onColumnClick: this._onColumnClick,
+        isSorted: false,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
+        onRender: (item, index, column) => {
+          return (
+            <span>
+              {new Date(item.Created).toDateString() +
+                " " +
+                new Date(item.Created).toLocaleTimeString()}
+            </span>
+          );
+        },
+      },
+    ];
+  };
+
+  private _bindColumns = () => {
+    const { noteType } = this.props;
+    if (noteType === "enote") {
+      this._EnoteDetailslistColumns();
+    } else if (noteType === "eCommittee") {
+      this._EcommiteeeDetailslistColumns();
+    }
+
+    return this._columns;
+  };
+
+  private _formatDate = (date: Date) => {
+    if (!(date instanceof Date)) {
+      throw new Error("Invalid date");
+    }
+
+    let day = date.getDate().toString().padStart(2, "0");
+    let month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is zero-indexed
     let year = date.getFullYear().toString();
-    let hours = date.getHours().toString().padStart(2, '0');
-    let minutes = date.getMinutes().toString().padStart(2, '0');
-    let seconds = date.getSeconds().toString().padStart(2, '0');
+    let hours = date.getHours().toString().padStart(2, "0");
+    let minutes = date.getMinutes().toString().padStart(2, "0");
+    let seconds = date.getSeconds().toString().padStart(2, "0");
 
     return `${day}${month}${year}${hours}${minutes}${seconds}`;
-}
+  };
 
-private _getExcel = async (): Promise<void> => {
+  private _getExcel = async (): Promise<void> => {
+    const todayDate = new Date();
+    const formatDate = this._formatDate(todayDate);
 
-  const todayDate=new Date();
-  const formatDate= this._formatDate(todayDate)
-
-    const fieldNames=this.state.columns.map(obj=>obj.fieldName)
-  const excelData = this.state.allItems?.map((item) => {
-    const res: string[] = [];
-    fieldNames.forEach((element:any) => {
-      if (typeof item[element] === "object" && item[element] !== null) {
-        res.push(item[element].join(", "));
-      } else {
-        res.push(item[element]);
-      }
+    const fieldNames = this.state.columns.map((obj) => obj.fieldName);
+    const excelData = this.state.allItems?.map((item) => {
+      const res: string[] = [];
+      fieldNames.forEach((element: any) => {
+        if (typeof item[element] === "object" && item[element] !== null) {
+          res.push(item[element].join(", "));
+        } else {
+          res.push(item[element]);
+        }
+      });
+      return res;
     });
-    return res;
-  });
-  const fileType =
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-  const fileExtension = ".xlsx";
-  const Heading = [this.state.columns?.map(obj=>obj.name)];
-  if (excelData.length > 0) {
-    const ws = XLSX.utils.book_new();
-    XLSX.utils.sheet_add_aoa(ws, Heading);
-    XLSX.utils.sheet_add_json(ws, excelData, {
-      origin: "A2",
-      skipHeader: true,
-    });
-    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    const data = new Blob([excelBuffer], { type: fileType });
-    FileSaver(
-      data,
-      this.props.noteType +this.props.viewType +formatDate+ fileExtension
-    );
-  }
-};
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const Heading = [this.state.columns?.map((obj) => obj.name)];
+    if (excelData.length > 0) {
+      const ws = XLSX.utils.book_new();
+      XLSX.utils.sheet_add_aoa(ws, Heading);
+      XLSX.utils.sheet_add_json(ws, excelData, {
+        origin: "A2",
+        skipHeader: true,
+      });
+      const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+      const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      const data = new Blob([excelBuffer], { type: fileType });
+      FileSaver(
+        data,
+        this.props.noteType + this.props.viewType + formatDate + fileExtension
+      );
+    }
+  };
 
   private _getBylistWithFilterQuery = async () => {
     const user = await this.props.sp?.web.currentUser();
     let filterQury = "";
     const groups = await this.props.sp.web.currentUser.groups();
-    if(groups && groups?.some((obj: { Title: string; })=>obj.Title === this.props.superAdminGroupName)){
+    if (
+      groups &&
+      groups?.some(
+        (obj: { Title: string }) => obj.Title === this.props.superAdminGroupName
+      )
+    ) {
       switch (this.props.viewType) {
         case "All Requests":
           filterQury = "StatusNumber ne '100' ";
@@ -2298,57 +1970,54 @@ private _getExcel = async (): Promise<void> => {
         case "PendingWith":
           filterQury = `StatusNumber eq '2000' or StatusNumber eq '3000' or StatusNumber eq '4000' `;
           break;
-  
+
+        default:
+          break;
+      }
+    } else {
+      switch (this.props.viewType) {
+        case "All Requests":
+          filterQury = `StatusNumber ne '100' and AuthorId eq ${user?.Id} `;
+          break;
+        case "Draft Requests":
+          filterQury = `StatusNumber eq '100' and AuthorId eq ${user?.Id} `;
+          break;
+        case "In Progress":
+          filterQury = `StatusNumber eq '2000' or StatusNumber eq '3000' or StatusNumber eq '4000' `;
+          break;
+        case "All Rejected":
+          filterQury = `StatusNumber eq '8000' and AuthorId eq ${user?.Id} `;
+          break;
+        case "All Approved":
+          filterQury = `StatusNumber eq '9000' AuthorId eq ${user?.Id} `;
+          break;
+        case "Noted Notes":
+          filterQury = `NatureOfNote eq 'Information' AuthorId eq ${user?.Id}`;
+          break;
+        case "MyPendingNotes":
+          filterQury = `CurrentApproverId eq ${user?.Id} `;
+          break;
+        case "MyReferredNotes":
+          filterQury = `CurrentApproverId eq ${user?.Id} and StatusNumber eq '4000' `;
+          break;
+        case "MyReturnedNotes":
+          filterQury = `AuthorId eq ${user?.Id} and StatusNumber eq '5000' `;
+          break;
+        case "MyApprovedNotes":
+          filterQury = `AuthorId eq ${user?.Id} and StatusNumber eq '9000' `;
+          break;
+        case "PendingWith":
+          filterQury = `StatusNumber eq '2000' or StatusNumber eq '3000' or StatusNumber eq '4000' `;
+          break;
+
         default:
           break;
       }
     }
-   else{
-    switch (this.props.viewType) {
-      case "All Requests":
-        filterQury = `StatusNumber ne '100' and AuthorId eq ${user?.Id} `;
-        break;
-      case "Draft Requests":
-        filterQury = `StatusNumber eq '100' and AuthorId eq ${user?.Id} `;
-        break;
-      case "In Progress":
-        filterQury = `StatusNumber eq '2000' or StatusNumber eq '3000' or StatusNumber eq '4000' `;
-        break;
-      case "All Rejected":
-        filterQury = `StatusNumber eq '8000' and AuthorId eq ${user?.Id} `;
-        break;
-      case "All Approved":
-        filterQury = `StatusNumber eq '9000' AuthorId eq ${user?.Id} `;
-        break;
-      case "Noted Notes":
-        filterQury = `NatureOfNote eq 'Information' AuthorId eq ${user?.Id}`;
-        break;
-      case "MyPendingNotes":
-        filterQury = `CurrentApproverId eq ${user?.Id} `;
-        break;
-      case "MyReferredNotes":
-        filterQury = `CurrentApproverId eq ${user?.Id} and StatusNumber eq '4000' `;
-        break;
-      case "MyReturnedNotes":
-        filterQury = `AuthorId eq ${user?.Id} and StatusNumber eq '5000' `;
-        break;
-      case "MyApprovedNotes":
-        filterQury = `AuthorId eq ${user?.Id} and StatusNumber eq '9000' `;
-        break;
-      case "PendingWith":
-        filterQury = `StatusNumber eq '2000' or StatusNumber eq '3000' or StatusNumber eq '4000' `;
-        break;
-
-      default:
-        break;
-    }
-
-   }
     return filterQury;
   };
 
   private getAllrequestesData = async () => {
-   
     const filterQury = await this._getBylistWithFilterQuery();
     const groupedData: any = [];
 
@@ -2379,7 +2048,7 @@ private _getExcel = async (): Promise<void> => {
         Subject: obj.Subject,
         Status: obj.Status,
         StatusNumber: obj.StatusNumber,
-        AuthorId:obj.AuthorId,
+        AuthorId: obj.AuthorId,
         CurrentApproverObj:
           obj.CurrentApprover === null && obj.CurrentApproverId === null
             ? null
@@ -2406,7 +2075,10 @@ private _getExcel = async (): Promise<void> => {
           obj.Author === null && obj.AuthorId === null ? "" : obj.Author?.Title,
         Created: obj.Created,
         Modified: obj.Modified,
-        CommitteeType:obj.CommitteeType ===null && typeof obj.CommitteeType ==="undefined"?"":obj.CommitteeType ,
+        CommitteeType:
+          obj.CommitteeType === null && typeof obj.CommitteeType === "undefined"
+            ? ""
+            : obj.CommitteeType,
         committeeName:
           obj.CommitteeName === null
             ? obj.BoardName === null
@@ -2527,21 +2199,20 @@ private _getExcel = async (): Promise<void> => {
     event?: React.ChangeEvent<HTMLInputElement>,
     newValue?: string
   ): void => {
- 
     const filteredItems = newValue
-    ? this.state.allItems.filter((item: any) =>
-        Object.values(item).some(
-          (value: any) =>
-            (value || "")
-              .toString()
-              .toLowerCase()
-              .indexOf(newValue.toLowerCase()) > -1
+      ? this.state.allItems.filter((item: any) =>
+          Object.values(item).some(
+            (value: any) =>
+              (value || "")
+                .toString()
+                .toLowerCase()
+                .indexOf(newValue.toLowerCase()) > -1
+          )
         )
-      )
-    : this.state.allItems;
+      : this.state.allItems;
     this.setState({
-      listItems:filteredItems
-    })
+      listItems: filteredItems,
+    });
     this.paginateFn(filteredItems, this.state.page);
     // }
   };
@@ -2592,182 +2263,15 @@ private _getExcel = async (): Promise<void> => {
   }
 
   public render(): React.ReactElement<IXenWpUcoBankProps> {
-    const { hasTeamsContext} = this.props;
+    const { hasTeamsContext } = this.props;
     const modalProps: any = {
       isBlocking: true,
       styles: modalPropsStyles,
       dragOptions: dragOptions,
     };
     const _items =
-    this.props.noteType ==="eCommittee"?
-      this.props.viewType === "Draft Requests"
-        ? [
-            {
-              key: "newItem",
-              name: "Create New Request",
-              iconProps: {
-                iconName: "Add",
-              },
-              split: true,
-              subMenuProps: {
-                items: [
-                  {
-                    key: 'Committeenotes',
-                    text: 'Committee Note',
-                    onClick: () => {
-                      window.location.href =
-                        this.props.context.pageContext.web.absoluteUrl +
-                        `/SitePages/${this.props.newPageUrl}.aspx`;
-                    },
-                  },
-                  {
-                    key: 'Boardnotes',
-                    text: 'Board Notes',
-                    onClick: () => {
-                      window.location.href =
-                        this.props.context.pageContext.web.absoluteUrl +
-                        `/SitePages/${this.props.CBnewPageUrl}.aspx`;
-                    },
-                  },
-                ],
-              },
-           
-            },
-            {
-              key: "EditItem",
-              name: "Edit Request",
-              iconProps: {
-                iconName: "Edit",
-              },
-              disabled: this._hideCommandOption,
-              onClick: () => {
-                const item = this.state.selectionDetails;
-                if (this.state.selectedcount === 0) {
-                  this._hideCommandOption = true;
-                } else {
-                  if(this.props.noteType ==="eCommittee"){
-                    if(item.CommitteeType && item.CommitteeType ==="Board"){
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`; 
-                    }else{
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
-                    }
-                  }else{
-                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
-                  }
-                }
-              },
-            },
-            {
-              key: "ViewItem",
-              name: "View Request",
-              iconProps: {
-                iconName: "View",
-              },
-              className: "viewBtnDiv",
-              disabled: this._hideCommandOption,
-              onClick: () => {
-                const item = this.state.selectionDetails;
-                if (this.state.selectedcount === 0) {
-                  this._hideCommandOption = true;
-                  return;
-                } else {
-                  if(this.props.noteType ==="eCommittee"){
-                    if(item.CommitteeType && item.CommitteeType ==="Board"){
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`; 
-                    }else{
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                    }
-                  }else{
-                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                  }
-                }
-              },
-            },
-          ]
-        : this.props.viewType === "PendingWith"
-        ? [ {
-          key: "Excell",
-          name: "Export CSV",
-          iconProps: {
-            iconName: "ExcelLogo",
-          },
-          disabled: this.state.allItems.length ===0,
-          onClick:() =>{
-            this._getExcel().then(res=>res).catch(err=>err)
-          },
-        },]
-        : [
-            {
-              key: "newItem",
-              name: "Create New Request",
-              iconProps: {
-                iconName: "Add",
-              },
-              split: true,
-              subMenuProps: {
-                items: [
-                  {
-                    key: 'Committeenotes',
-                    text: 'Committee Note',
-                    onClick: () => {
-                      window.location.href =
-                        this.props.context.pageContext.web.absoluteUrl +
-                        `/SitePages/${this.props.newPageUrl}.aspx`;
-                    },
-                  },
-                  {
-                    key: 'Boardnotes',
-                    text: 'Board Notes',
-                    onClick: () => {
-                      window.location.href =
-                        this.props.context.pageContext.web.absoluteUrl +
-                        `/SitePages/${this.props.CBnewPageUrl}.aspx`;
-                    },
-                  },
-                ],
-              },
-             
-            },
-
-            {
-              key: "ViewItem",
-              name: "View Request",
-              iconProps: {
-                iconName: "View",
-              },
-              className: "viewBtnDiv",
-              disabled: this._hideCommandOption,
-              onClick: () => {
-                const item = this.state.selectionDetails;
-                
-                if (this.state.selectedcount === 0) {
-                  this._hideCommandOption=true
-                  return;
-                } else {
-                  if(this.props.noteType ==="eCommittee"){
-                    if(item.CommitteeType && item.CommitteeType ==="Board"){
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`; 
-                    }else{
-                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                    }
-                  }else{
-                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                  }
-                }
-              },
-            },
-            {
-              key: "Excell",
-              name: "Export CSV",
-              iconProps: {
-                iconName: "ExcelLogo",
-              },
-              disabled: this.state.allItems.length ===0,
-              onClick:() =>{
-                this._getExcel().then(res=>res).catch(err=>err)
-              },
-            },
-          ]: this.props.viewType === "Draft Requests"
+      this.props.noteType === "eCommittee"
+        ? this.props.viewType === "Draft Requests"
           ? [
               {
                 key: "newItem",
@@ -2776,10 +2280,27 @@ private _getExcel = async (): Promise<void> => {
                   iconName: "Add",
                 },
                 split: true,
-                onClick: () => {
-                  window.location.href =
-                    this.props.context.pageContext.web.absoluteUrl +
-                    `/SitePages/${this.props.newPageUrl}.aspx`;
+                subMenuProps: {
+                  items: [
+                    {
+                      key: "Committeenotes",
+                      text: "Committee Note",
+                      onClick: () => {
+                        window.location.href =
+                          this.props.context.pageContext.web.absoluteUrl +
+                          `/SitePages/${this.props.newPageUrl}.aspx`;
+                      },
+                    },
+                    {
+                      key: "Boardnotes",
+                      text: "Board Notes",
+                      onClick: () => {
+                        window.location.href =
+                          this.props.context.pageContext.web.absoluteUrl +
+                          `/SitePages/${this.props.CBnewPageUrl}.aspx`;
+                      },
+                    },
+                  ],
                 },
               },
               {
@@ -2794,14 +2315,17 @@ private _getExcel = async (): Promise<void> => {
                   if (this.state.selectedcount === 0) {
                     this._hideCommandOption = true;
                   } else {
-                    if(this.props.noteType ==="eCommittee"){
-                      if(item.CommitteeType && item.CommitteeType ==="Board"){
-                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`; 
-                      }else{
+                    if (this.props.noteType === "eCommittee") {
+                      if (
+                        item.CommitteeType &&
+                        item.CommitteeType === "Board"
+                      ) {
+                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`;
+                      } else {
                         window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
                       }
-                    }else{
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+                    } else {
+                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
                     }
                   }
                 },
@@ -2818,33 +2342,40 @@ private _getExcel = async (): Promise<void> => {
                   const item = this.state.selectionDetails;
                   if (this.state.selectedcount === 0) {
                     this._hideCommandOption = true;
-                    return;
+                    return null;
                   } else {
-                    if(this.props.noteType ==="eCommittee"){
-                      if(item.CommitteeType && item.CommitteeType ==="Board"){
-                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`; 
-                      }else{
+                    if (this.props.noteType === "eCommittee") {
+                      if (
+                        item.CommitteeType &&
+                        item.CommitteeType === "Board"
+                      ) {
+                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+                      } else {
                         window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
                       }
-                    }else{
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                    } else {
+                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
                     }
                   }
                 },
               },
             ]
           : this.props.viewType === "PendingWith"
-          ? [ {
-            key: "Excell",
-            name: "Export CSV",
-            iconProps: {
-              iconName: "ExcelLogo",
-            },
-            disabled: this.state.allItems.length ===0,
-            onClick:() =>{
-              this._getExcel().then(res=>res).catch(err=>err)
-            },
-          },]
+          ? [
+              {
+                key: "Excell",
+                name: "Export CSV",
+                iconProps: {
+                  iconName: "ExcelLogo",
+                },
+                disabled: this.state.allItems.length === 0,
+                onClick: () => {
+                  this._getExcel()
+                    .then((res) => res)
+                    .catch((err) => err);
+                },
+              },
+            ]
           : [
               {
                 key: "newItem",
@@ -2853,13 +2384,30 @@ private _getExcel = async (): Promise<void> => {
                   iconName: "Add",
                 },
                 split: true,
-                onClick: () => {
-                  window.location.href =
-                    this.props.context.pageContext.web.absoluteUrl +
-                    `/SitePages/${this.props.newPageUrl}.aspx`;
+                subMenuProps: {
+                  items: [
+                    {
+                      key: "Committeenotes",
+                      text: "Committee Note",
+                      onClick: () => {
+                        window.location.href =
+                          this.props.context.pageContext.web.absoluteUrl +
+                          `/SitePages/${this.props.newPageUrl}.aspx`;
+                      },
+                    },
+                    {
+                      key: "Boardnotes",
+                      text: "Board Notes",
+                      onClick: () => {
+                        window.location.href =
+                          this.props.context.pageContext.web.absoluteUrl +
+                          `/SitePages/${this.props.CBnewPageUrl}.aspx`;
+                      },
+                    },
+                  ],
                 },
               },
-  
+
               {
                 key: "ViewItem",
                 name: "View Request",
@@ -2870,19 +2418,22 @@ private _getExcel = async (): Promise<void> => {
                 disabled: this._hideCommandOption,
                 onClick: () => {
                   const item = this.state.selectionDetails;
-                  
+
                   if (this.state.selectedcount === 0) {
-                    this._hideCommandOption=true
-                    return;
+                    this._hideCommandOption = true;
+                    return null;
                   } else {
-                    if(this.props.noteType ==="eCommittee"){
-                      if(item.CommitteeType && item.CommitteeType ==="Board"){
-                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`; 
-                      }else{
+                    if (this.props.noteType === "eCommittee") {
+                      if (
+                        item.CommitteeType &&
+                        item.CommitteeType === "Board"
+                      ) {
+                        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+                      } else {
                         window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
                       }
-                    }else{
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                    } else {
+                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
                     }
                   }
                 },
@@ -2893,12 +2444,152 @@ private _getExcel = async (): Promise<void> => {
                 iconProps: {
                   iconName: "ExcelLogo",
                 },
-                disabled: this.state.allItems.length ===0,
-                onClick:() =>{
-                  this._getExcel().then(res=>res).catch(err=>err)
+                disabled: this.state.allItems.length === 0,
+                onClick: () => {
+                  this._getExcel()
+                    .then((res) => res)
+                    .catch((err) => err);
                 },
               },
             ]
+        : this.props.viewType === "Draft Requests"
+        ? [
+            {
+              key: "newItem",
+              name: "Create New Request",
+              iconProps: {
+                iconName: "Add",
+              },
+              split: true,
+              onClick: () => {
+                window.location.href =
+                  this.props.context.pageContext.web.absoluteUrl +
+                  `/SitePages/${this.props.newPageUrl}.aspx`;
+              },
+            },
+            {
+              key: "EditItem",
+              name: "Edit Request",
+              iconProps: {
+                iconName: "Edit",
+              },
+              disabled: this._hideCommandOption,
+              onClick: () => {
+                const item = this.state.selectionDetails;
+                if (this.state.selectedcount === 0) {
+                  this._hideCommandOption = true;
+                } else {
+                  if (this.props.noteType === "eCommittee") {
+                    if (item.CommitteeType && item.CommitteeType === "Board") {
+                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`;
+                    } else {
+                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+                    }
+                  } else {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+                  }
+                }
+              },
+            },
+            {
+              key: "ViewItem",
+              name: "View Request",
+              iconProps: {
+                iconName: "View",
+              },
+              className: "viewBtnDiv",
+              disabled: this._hideCommandOption,
+              onClick: () => {
+                const item = this.state.selectionDetails;
+                if (this.state.selectedcount === 0) {
+                  this._hideCommandOption = true;
+                  return null;
+                } else {
+                  if (this.props.noteType === "eCommittee") {
+                    if (item.CommitteeType && item.CommitteeType === "Board") {
+                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+                    } else {
+                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                    }
+                  } else {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                  }
+                }
+              },
+            },
+          ]
+        : this.props.viewType === "PendingWith"
+        ? [
+            {
+              key: "Excell",
+              name: "Export CSV",
+              iconProps: {
+                iconName: "ExcelLogo",
+              },
+              disabled: this.state.allItems.length === 0,
+              onClick: () => {
+                this._getExcel()
+                  .then((res) => res)
+                  .catch((err) => err);
+              },
+            },
+          ]
+        : [
+            {
+              key: "newItem",
+              name: "Create New Request",
+              iconProps: {
+                iconName: "Add",
+              },
+              split: true,
+              onClick: () => {
+                window.location.href =
+                  this.props.context.pageContext.web.absoluteUrl +
+                  `/SitePages/${this.props.newPageUrl}.aspx`;
+              },
+            },
+
+            {
+              key: "ViewItem",
+              name: "View Request",
+              iconProps: {
+                iconName: "View",
+              },
+              className: "viewBtnDiv",
+              disabled: this._hideCommandOption,
+              onClick: () => {
+                const item = this.state.selectionDetails;
+
+                if (this.state.selectedcount === 0) {
+                  this._hideCommandOption = true;
+                  return null;
+                } else {
+                  if (this.props.noteType === "eCommittee") {
+                    if (item.CommitteeType && item.CommitteeType === "Board") {
+                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+                    } else {
+                      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                    }
+                  } else {
+                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+                  }
+                }
+              },
+            },
+            {
+              key: "Excell",
+              name: "Export CSV",
+              iconProps: {
+                iconName: "ExcelLogo",
+              },
+              disabled: this.state.allItems.length === 0,
+              onClick: () => {
+                this._getExcel()
+                  .then((res) => res)
+                  .catch((err) => err);
+              },
+            },
+          ];
     return (
       <section
         className={`${styles.xenWpUcoBank} ${
@@ -2911,10 +2602,10 @@ private _getExcel = async (): Promise<void> => {
           updateProperty={this.props.updateProperty}
         />
         <div className={styles.commandbarContainer}>
-          <div style={{width:"70%"}}>
+          <div style={{ width: "70%" }}>
             <CommandBar items={_items} />
           </div>
-          <div style={{width:"30%"}}>
+          <div style={{ width: "30%" }}>
             <SearchBox
               placeholder="Search"
               title="Search"
@@ -2940,42 +2631,42 @@ private _getExcel = async (): Promise<void> => {
           />
         </div>
         <div>
-        <span className={styles._totalDataCount}>{this.state.allItems.length>0?`1 - ${this.state.allItems.length}`:null}</span>
+          <span className={styles._totalDataCount}>
+            {this.state.allItems.length > 0
+              ? `1 - ${this.state.allItems.length}`
+              : null}
+          </span>
           <Pagination
-          
             currentPage={this.state.page}
             totalItems={this.state.allItems.length}
             onChange={(page) => this.handlePaginationChange(page)}
           />
         </div>
-     
+
         <Dialog
           hidden={this.state.hideSuccussDialog}
           onDismiss={this._toggleSuccussDialog}
           dialogContentProps={dialogContentProps}
           modalProps={modalProps}
-       
         >
           <p>{this.state.succussMsg}</p>
           <DialogFooter>
             <PrimaryButton onClick={this.handleCloseSuccuss} text="Ok" />
           </DialogFooter>
         </Dialog>
-    
+
         <Dialog
           hidden={this.state.hideWarningDialog}
           onDismiss={this._toggleWarningDialog}
           dialogContentProps={dialogContentProps}
           modalProps={modalProps}
-     
-          
         >
           <p>{this.state.warningMsg}</p>
           <DialogFooter>
             <PrimaryButton onClick={this._toggleWarningDialog} text="OK" />
           </DialogFooter>
         </Dialog>
-      
+
         <Dialog
           hidden={this.state.hideDeleteDialog}
           onDismiss={() =>
@@ -2983,8 +2674,6 @@ private _getExcel = async (): Promise<void> => {
           }
           dialogContentProps={dialogContentProps}
           modalProps={modalProps}
-        
-          
         >
           <p>Do you want delete this request?</p>
           <DialogFooter>

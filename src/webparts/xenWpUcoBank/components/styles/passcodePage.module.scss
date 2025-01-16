@@ -56,9 +56,6 @@
     margin: 20px auto auto auto;
 }
 
-.resendPara {
-    padding-top: 10px;
-}
 
 .successDialog {
     margin: 25px;
@@ -73,16 +70,16 @@
 
 ._createCard {
     border: none;
-    transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+    
     overflow: hidden;
-    border-radius: 20px;
+    
     display: inline-block;
     background: "[theme:themePrimary, default:#03787c]";
     border-radius: 15px;
    padding: 5% 6%;
     backdrop-filter: blur(50px);
     box-shadow: 0 8px 16px #bcc8d6;
-    border: none;
+    
     transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
     position: relative;
     top: 0px;
@@ -92,6 +89,19 @@
       text-align: left;
       display: block;
   }
+
+  &:before{
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    bottom: -2px;
+    left: -2px;
+    background: linear-gradient(315deg,"[theme:themeLight, default:#b3d6f2]","[theme:themePrimary, default:#03787c]" );
+    z-index: -1;
+    transform: skew(0deg, 0deg);
+    border-radius: 10px;
+}
 }
 
 .timer {
@@ -103,27 +113,15 @@
     color: red;
 }
 
+
+
 .confirmerror {
     color: red;
     font-size: 12px;
     margin-top: -10px;
 }
 
-._createCard {
-    &:before{
-        content: '';
-        position: absolute;
-        top: -2px;
-        right: -2px;
-        bottom: -2px;
-        left: -2px;
-        background: linear-gradient(315deg,"[theme:themeLight, default:#b3d6f2]","[theme:themePrimary, default:#03787c]" );
-        z-index: -1;
-        transform: skew(0deg, 0deg);
-        border-radius: 10px;
-    }
- 
-}
+
 
 .eye_icon  {
   i{
