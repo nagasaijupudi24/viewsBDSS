@@ -601,7 +601,7 @@ Accepted - 4000 */
         )
       :prevState.allItems;
 
-      this.paginateFn(filteredItems, this.state.page);
+      this.paginateFn(filteredItems, prevState.page);
 
      return { listItems: filteredItems,}
     });

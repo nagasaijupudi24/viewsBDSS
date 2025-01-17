@@ -666,9 +666,9 @@ Returned -8000 */
     event?: React.ChangeEvent<HTMLInputElement>,
     newValue?: string
   ): void => {
-    this.setState({
-      listItems: newValue
-        ? this.state.allItems.filter((item: any) =>
+    this.setState((prevState)=>{
+      return {listItems: newValue
+        ? prevState.allItems.filter((item: any) =>
             Object.values(item).some(
               (value: any) =>
                 (value || "")
@@ -677,7 +677,7 @@ Returned -8000 */
                   .indexOf(newValue.toLowerCase()) > -1
             )
           )
-        : this.state.allItems,
+        : prevState.allItems,}
     });
     this.paginateFn(this.state.allItems, this.state.page);
   };

@@ -2221,7 +2221,7 @@ export default class ListViews extends React.Component<
         )
       : prevState.allItems;
 
-      this.paginateFn(filteredItems, this.state.page);
+      this.paginateFn(filteredItems, prevState.page);
 
       return {listItems: filteredItems,}
     });
@@ -2383,6 +2383,23 @@ export default class ListViews extends React.Component<
     );
   }
 
+
+  private _itemsCondition1SubCondition1ViewItemKEY = (item:any)=>{
+    if (this.props.noteType === "eCommittee") {
+      if (
+        item.CommitteeType &&
+        item.CommitteeType === "Board"
+      ) {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+      } else {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+      }
+    } else {
+      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+    }
+
+  }
+
   private _itemsCondition1SubCondition1 = ()=>{
     return (this.props.viewType === "PendingWith"
       ? [
@@ -2447,18 +2464,8 @@ export default class ListViews extends React.Component<
                 this._hideCommandOption = true;
                 return null;
               } else {
-                if (this.props.noteType === "eCommittee") {
-                  if (
-                    item.CommitteeType &&
-                    item.CommitteeType === "Board"
-                  ) {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
-                  } else {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                  }
-                } else {
-                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                }
+                this._itemsCondition1SubCondition1ViewItemKEY(item)
+               
               }
             },
           },
@@ -2476,6 +2483,40 @@ export default class ListViews extends React.Component<
             },
           },
         ])
+  }
+
+
+  private _itemsCondition1EditItemKEY = (item:any):any=>{
+    if (this.props.noteType === "eCommittee") {
+      if (
+        item.CommitteeType &&
+        item.CommitteeType === "Board"
+      ) {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`;
+      } else {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+      }
+    } else {
+      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+    }
+
+  }
+
+  private _itemsCondition1ViewItemKEY =(item:any):any =>{
+    if (this.props.noteType === "eCommittee") {
+      if (
+        item.CommitteeType &&
+        item.CommitteeType === "Board"
+      ) {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+      } else {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+      }
+    } else {
+      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+    }
+
+
   }
 
 
@@ -2524,18 +2565,8 @@ export default class ListViews extends React.Component<
               if (this.state.selectedcount === 0) {
                 this._hideCommandOption = true;
               } else {
-                if (this.props.noteType === "eCommittee") {
-                  if (
-                    item.CommitteeType &&
-                    item.CommitteeType === "Board"
-                  ) {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`;
-                  } else {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
-                  }
-                } else {
-                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
-                }
+                this._itemsCondition1EditItemKEY(item)
+               
               }
             },
           },
@@ -2553,23 +2584,26 @@ export default class ListViews extends React.Component<
                 this._hideCommandOption = true;
                 return null;
               } else {
-                if (this.props.noteType === "eCommittee") {
-                  if (
-                    item.CommitteeType &&
-                    item.CommitteeType === "Board"
-                  ) {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
-                  } else {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                  }
-                } else {
-                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                }
+                this._itemsCondition1ViewItemKEY(item)
+                
               }
             },
           },
         ]
       : this._itemsCondition1SubCondition1())
+  }
+
+  private _itemsCondition2SubCondition1ViewItemKEY = (item:any):any=>{
+    if (this.props.noteType === "eCommittee") {
+      if (item.CommitteeType && item.CommitteeType === "Board") {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+      } else {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+      }
+    } else {
+      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+    }
+
   }
 
 
@@ -2620,15 +2654,8 @@ export default class ListViews extends React.Component<
                 this._hideCommandOption = true;
                 return null;
               } else {
-                if (this.props.noteType === "eCommittee") {
-                  if (item.CommitteeType && item.CommitteeType === "Board") {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
-                  } else {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                  }
-                } else {
-                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                }
+                this._itemsCondition2SubCondition1ViewItemKEY(item)
+               
               }
             },
           },
@@ -2646,6 +2673,34 @@ export default class ListViews extends React.Component<
             },
           },
         ])
+  }
+
+
+
+  private _itemsCondition2EditItemKey = (item:any):any=>{
+    if (this.props.noteType === "eCommittee") {
+      if (item.CommitteeType && item.CommitteeType === "Board") {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`;
+      } else {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+      }
+    } else {
+      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
+    }
+  }
+
+
+
+  private _itemsCondition2ViewBtnDiv = (item:any):any=>{
+    if (this.props.noteType === "eCommittee") {
+      if (item.CommitteeType && item.CommitteeType === "Board") {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
+      } else {
+        window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+      }
+    } else {
+      window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
+    }
   }
 
   private _itemsCondition2 = ()=>{
@@ -2676,15 +2731,8 @@ export default class ListViews extends React.Component<
               if (this.state.selectedcount === 0) {
                 this._hideCommandOption = true;
               } else {
-                if (this.props.noteType === "eCommittee") {
-                  if (item.CommitteeType && item.CommitteeType === "Board") {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBeditPage}.aspx?itemId=${item.Id}`;
-                  } else {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
-                  }
-                } else {
-                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.editPage}.aspx?itemId=${item.Id}`;
-                }
+                this._itemsCondition2EditItemKey(item)
+               
               }
             },
           },
@@ -2702,15 +2750,8 @@ export default class ListViews extends React.Component<
                 this._hideCommandOption = true;
                 return null;
               } else {
-                if (this.props.noteType === "eCommittee") {
-                  if (item.CommitteeType && item.CommitteeType === "Board") {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.CBviewPageUrl}.aspx?itemId=${item.Id}`;
-                  } else {
-                    window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                  }
-                } else {
-                  window.location.href = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/${this.props.viewPageUrl}.aspx?itemId=${item.Id}`;
-                }
+                this._itemsCondition2ViewBtnDiv(item)
+                
               }
             },
           },
